@@ -1,21 +1,13 @@
+// src/pages/Home.jsx
 import { useEffect, useState } from 'react';
 import { productAPI } from '../api/index.js';
-import {
-    Container,
-    Grid,
-    Card,
-    CardContent,
-    Typography,
-    Button,
-    TextField,
-    MenuItem,
-    Skeleton,
-    Snackbar,
-    Alert,
-    CardMedia
-} from '@mui/material';
+import { Container, Typography, Box, Skeleton } from '@mui/material'; // ✅ Import Skeleton here
 import { useNavigate } from 'react-router-dom';
-import Navbar from './components/Navbar';  // Import Navbar component
+import Navbar from '../components/Navbar.jsx';
+import ProductCard from '../components/ProductCard.jsx';
+import SnackbarComponent from '../components/SnackbarComponent.jsx'; // ✅ Importing SnackbarComponent
+import PaginationComponent from '../components/PaginationComponent.jsx'; // ✅ Importing PaginationComponent
+import SearchSortComponent from '../components/SearchSortComponent.jsx'; // ✅ Importing SearchSortComponent
 
 export default function Home() {
     const [products, setProducts] = useState([]);
@@ -25,18 +17,28 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const [logoutSuccess, setLogoutSuccess] = useState(false);
     const [cartSuccess, setCartSuccess] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
     const navigate = useNavigate();
 
-    const placeholderImage = 'https://via.placeholder.com/300x200?text=No+Image';
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/', { replace: true });
+        }
+    }, [navigate]);
 
     useEffect(() => {
         fetchProducts();
-    }, [searchQuery, sortOrder]);
+    }, [searchQuery, sortOrder, page]);
 
     const fetchProducts = async () => {
         try {
-            const response = await productAPI.get(`/?name=${searchQuery}&sortBy=price&order=${sortOrder}`);
+            setLoading(true);
+            const response = await productAPI.get(`/?name=${searchQuery}&sortBy=price&order=${sortOrder}&page=${page}`);
             setProducts(response.data.products || []);
+            setTotalPages(response.data.totalPages || 1);
         } catch (err) {
             console.error('Error fetching products:', err);
             setError('Could not load products.');
@@ -46,12 +48,14 @@ export default function Home() {
         }
     };
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
+    const handlePageChange = (event, value) => {
+        setPage(value);
     };
 
-    const handleSortChange = (e) => {
-        setSortOrder(e.target.value);
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setLogoutSuccess(true);
+        setTimeout(() => navigate('/'), 1500);
     };
 
     const handleAddToCart = (product) => {
@@ -69,114 +73,93 @@ export default function Home() {
     };
 
     return (
-        <div>
-            <Navbar /> {/* Add Navbar Component here */}
+        <Container sx={{ mt: 4 }}>
+            <Navbar />
 
-            <Container sx={{ mt: 4 }}>
-                <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
-                    Product List
+            <Typography variant="h4" gutterBottom sx={{ mt: 2, textAlign: 'center', fontWeight: 'bold' }}>
+                Product List
+            </Typography>
+
+            {/* Search and Sort Component */}
+            <SearchSortComponent
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                sortOrder={sortOrder}
+                setSortOrder={setSortOrder}
+            />
+
+            {/* Error */}
+            {error && (
+                <Typography color="error" textAlign="center">
+                    {error}
                 </Typography>
+            )}
 
-                <TextField
-                    label="Search Products"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                />
-
-                <TextField
-                    label="Sort By Price"
-                    select
-                    value={sortOrder}
-                    onChange={handleSortChange}
-                    fullWidth
-                    sx={{ mb: 2 }}
+            {/* Product List */}
+            {loading ? (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 3,
+                        justifyContent: 'center',
+                        mt: 4,
+                    }}
                 >
-                    <MenuItem value="asc">Ascending</MenuItem>
-                    <MenuItem value="desc">Descending</MenuItem>
-                </TextField>
-
-                {error && <Typography color="error">{error}</Typography>}
-
-                {loading ? (
-                    <Grid container spacing={2}>
-                        {[...Array(4)].map((_, index) => (
-                            <Grid item key={index} xs={12} sm={6}>
-                                <Card sx={{ height: 400 }}>
-                                    <Skeleton variant="rectangular" height={200} />
-                                    <CardContent>
-                                        <Skeleton width="60%" />
-                                        <Skeleton width="40%" />
-                                        <Skeleton width="80%" />
-                                        <Skeleton width="50%" />
-                                        <Skeleton variant="rectangular" height={36} sx={{ mt: 2 }} />
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
-                ) : (
-                    <Grid container spacing={2}>
-                        {products.length > 0 ? (
-                            products.map((product) => (
-                                <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-                                    <Card sx={{ height: 400, display: 'flex', flexDirection: 'column' }}>
-                                        <CardMedia
-                                            component="img"
-                                            image={product.image_url || placeholderImage}
-                                            alt={product.name}
-                                            sx={{
-                                                height: 200,
-                                                objectFit: 'cover'
-                                            }}
-                                        />
-                                        <CardContent sx={{ flexGrow: 1 }}>
-                                            <Typography variant="h6" noWrap>{product.name}</Typography>
-                                            <Typography variant="body2" color="textSecondary" noWrap>
-                                                {product.category}
-                                            </Typography>
-                                            <Typography variant="body2" color="textSecondary" noWrap>
-                                                {product.description}
-                                            </Typography>
-                                            <Typography variant="body2" sx={{ mt: 1 }}>
-                                                Price: ${product.price}
-                                            </Typography>
-                                            <Typography variant="body2" color="textSecondary">
-                                                Stock: {product.stock_quantity}
-                                            </Typography>
-                                        </CardContent>
-                                        <Button
-                                            variant="contained"
-                                            sx={{ m: 2 }}
-                                            onClick={() => handleAddToCart(product)}
-                                            disabled={product.stock_quantity === 0}
-                                        >
-                                            {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
-                                        </Button>
-                                    </Card>
-                                </Grid>
-                            ))
-                        ) : (
-                            <Typography sx={{ mt: 4, width: '100%', textAlign: 'center' }}>
-                                No products found.
-                            </Typography>
-                        )}
-                    </Grid>
-                )}
-
-                {/* Add to Cart Snackbar */}
-                <Snackbar
-                    open={cartSuccess}
-                    autoHideDuration={1000}
-                    onClose={() => setCartSuccess(false)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    {[...Array(8)].map((_, index) => (
+                        <Skeleton
+                            variant="rectangular"
+                            width={250}
+                            height={350}
+                            key={index}
+                            sx={{ borderRadius: 2 }}
+                        />
+                    ))}
+                </Box>
+            ) : (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 3,
+                        justifyContent: 'center',
+                        mt: 4,
+                    }}
                 >
-                    <Alert severity="success" sx={{ width: '100%' }}>
-                        Product added to cart!
-                    </Alert>
-                </Snackbar>
-            </Container>
-        </div>
+                    {products.length > 0 ? (
+                        products.map((product) => (
+                            <ProductCard
+                                key={product._id}
+                                product={product}
+                                handleAddToCart={handleAddToCart}
+                            />
+                        ))
+                    ) : (
+                        <Typography variant="h6" sx={{ mt: 4 }}>
+                            No products found.
+                        </Typography>
+                    )}
+                </Box>
+            )}
+
+            {/* Pagination Component */}
+            <PaginationComponent count={totalPages} page={page} onPageChange={handlePageChange} />
+
+            {/* Snackbars */}
+            <SnackbarComponent
+                open={logoutSuccess}
+                onClose={() => setLogoutSuccess(false)}
+                severity="success"
+                message="Logged out successfully!"
+            />
+
+            <SnackbarComponent
+                open={cartSuccess}
+                onClose={() => setCartSuccess(false)}
+                severity="success"
+                message="Product added to cart!"
+                autoHideDuration={1000}
+            />
+        </Container>
     );
 }
