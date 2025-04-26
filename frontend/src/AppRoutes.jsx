@@ -1,14 +1,15 @@
+// src/AppRoutes.jsx
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Home from "./pages/Home";  // Ensure you are importing Home correctly
+import Home from "./pages/Home";
 
 export default function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/home" element={<Home />} />  {/* Make sure this path is correct */}
+            <Route path="/home" element={<Home />} />
         </Routes>
     );
 }
