@@ -122,19 +122,15 @@ export default function CartPage() {
           </Typography>
 
           <IconButton
+            color="error"
             onClick={handleEmptyCart}
             sx={{
               border: '1px solid #f44336',
               px: 2,
               py: 1,
               borderRadius: 2,
-              color: '#f44336',
-              display: 'flex',
-              alignItems: 'center',
-              transition: 'all 0.3s ease',
               '&:hover': {
                 backgroundColor: '#ffe6e6',
-                transform: 'scale(1.05)',
               },
             }}
           >
@@ -220,39 +216,19 @@ export default function CartPage() {
                           sx={{ width: 100 }}
                         />
                         <Button
+                          color="error"
                           variant="outlined"
                           onClick={() => handleRemove(item.productId)}
-                          sx={{
-                            textTransform: 'none',
-                            fontWeight: 'bold',
-                            color: '#f44336',
-                            borderColor: '#f44336',
-                            transition: '0.3s',
-                            '&:hover': {
-                              backgroundColor: '#ffe6e6',
-                              borderColor: '#d32f2f',
-                            },
-                          }}
+                          sx={{ textTransform: 'none' }}
                         >
                           Remove
                         </Button>
                       </Stack>
                       <Button
                         variant="contained"
+                        color="primary"
                         onClick={() => handleBuyNow(item)}
-                        sx={{
-                          textTransform: 'none',
-                          fontWeight: 'bold',
-                          color: 'white',
-                          width: { xs: '100%', sm: 'auto' },
-                          background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
-                          backgroundSize: '200%',
-                          transition: 'all 0.4s ease',
-                          '&:hover': {
-                            transform: 'scale(1.05)',
-                            backgroundPosition: 'right',
-                          },
-                        }}
+                        sx={{ textTransform: 'none', width: { xs: '100%', sm: 'auto' } }}
                       >
                         Buy Now
                       </Button>

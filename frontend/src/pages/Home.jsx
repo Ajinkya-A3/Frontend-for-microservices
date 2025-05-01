@@ -1,15 +1,15 @@
 // src/pages/Home.jsx
 import { useEffect, useState } from 'react';
 import { productAPI } from '../api/index.js';
-import { Container, Typography, Box, Skeleton } from '@mui/material'; // ✅ Import Skeleton here
+import { Container, Typography, Box, Skeleton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar.jsx';
 import ProductCard from '../components/ProductCard.jsx';
-import SnackbarComponent from '../components/SnackbarComponent.jsx'; // ✅ Importing SnackbarComponent
-import PaginationComponent from '../components/PaginationComponent.jsx'; // ✅ Importing PaginationComponent
-import SearchSortComponent from '../components/SearchSortComponent.jsx'; // ✅ Importing SearchSortComponent
+import SnackbarComponent from '../components/SnackbarComponent.jsx';
+import PaginationComponent from '../components/PaginationComponent.jsx';
+import SearchSortComponent from '../components/SearchSortComponent.jsx';
 import Footer from '../components/Footer';
-
+import axios from 'axios';
 
 export default function Home() {
     const [products, setProducts] = useState([]);
@@ -60,18 +60,31 @@ export default function Home() {
         setTimeout(() => navigate('/'), 1500);
     };
 
-    const handleAddToCart = (product) => {
-        const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existingProductIndex = existingCart.findIndex(item => item.id === product.id);
-
-        if (existingProductIndex !== -1) {
-            existingCart[existingProductIndex].quantity += 1;
-        } else {
-            existingCart.push({ ...product, quantity: 1 });
+    const handleAddToCart = async (product) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setError('Please log in to add items to your cart.');
+            return;
         }
 
-        localStorage.setItem('cart', JSON.stringify(existingCart));
-        setCartSuccess(true);
+        try {
+            await axios.post(
+                `${import.meta.env.VITE_API_CART}/add`,
+                {
+                    productId: product._id,
+                    quantity: 1,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setCartSuccess(true);
+        } catch (err) {
+            console.error('Error adding to cart:', err);
+            setError('Failed to add product to cart.');
+        }
     };
 
     return (
@@ -82,7 +95,6 @@ export default function Home() {
                 Product List
             </Typography>
 
-            {/* Search and Sort Component */}
             <SearchSortComponent
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
@@ -90,14 +102,12 @@ export default function Home() {
                 setSortOrder={setSortOrder}
             />
 
-            {/* Error */}
             {error && (
                 <Typography color="error" textAlign="center">
                     {error}
                 </Typography>
             )}
 
-            {/* Product List */}
             {loading ? (
                 <Box
                     sx={{
@@ -144,10 +154,8 @@ export default function Home() {
                 </Box>
             )}
 
-            {/* Pagination Component */}
             <PaginationComponent count={totalPages} page={page} onPageChange={handlePageChange} />
 
-            {/* Snackbars */}
             <SnackbarComponent
                 open={logoutSuccess}
                 onClose={() => setLogoutSuccess(false)}
