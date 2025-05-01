@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import Footer from '../components/Footer';
+
 import {
   Container, Typography, Card, CardContent, Grid, CircularProgress,
   Box, CardMedia, TextField, Button, Stack, IconButton
@@ -7,7 +9,7 @@ import axios from 'axios';
 import Navbar from '../components/Navbar';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const placeholderImage = 'https://placehold.co/200x150?text=Product+Image';
+const placeholderImage = 'https://placehold.co/300x200?text=Product+Image';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -123,9 +125,6 @@ export default function CartPage() {
             color="error"
             onClick={handleEmptyCart}
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
               border: '1px solid #f44336',
               px: 2,
               py: 1,
@@ -136,7 +135,7 @@ export default function CartPage() {
             }}
           >
             <DeleteIcon />
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', ml: 1 }}>
               Empty Cart
             </Typography>
           </IconButton>
@@ -147,29 +146,29 @@ export default function CartPage() {
             No items in cart.
           </Typography>
         ) : (
-          <Grid container spacing={3} justifyContent="center">
+          <Grid container spacing={4} justifyContent="center">
             {cartItems.map((item) => (
-              <Grid item xs={12} md={10} key={item._id}>
+              <Grid item xs={12} sm={10} md={9} lg={8} key={item._id}>
                 <Card
                   sx={{
                     display: 'flex',
                     flexDirection: { xs: 'column', sm: 'row' },
                     alignItems: 'stretch',
-                    boxShadow: 4,
+                    boxShadow: 6,
                     borderRadius: 3,
                     overflow: 'hidden',
-                    p: 2,
-                    bgcolor: '#fafafa',
+                    p: { xs: 1, sm: 2 },
+                    bgcolor: '#fdfdfd',
                   }}
                 >
                   <CardMedia
                     component="img"
                     sx={{
-                      width: { xs: '100%', sm: 200 },
-                      height: 200,
+                      width: { xs: '100%', sm: 300 },
+                      height: { xs: 200, sm: 250 },
                       objectFit: 'cover',
                       borderRadius: 2,
-                      mr: { sm: 2 },
+                      mr: { sm: 3 },
                     }}
                     image={item.image || placeholderImage}
                     onError={(e) => {
@@ -179,14 +178,14 @@ export default function CartPage() {
                     alt={item.name}
                   />
                   <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
-                    <CardContent sx={{ pb: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    <CardContent>
+                      <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
                         {item.name}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                         {item.description}
                       </Typography>
-                      <Typography variant="subtitle1" color="primary">
+                      <Typography variant="h6" color="primary">
                         Price: ${item.price.toFixed(2)}
                       </Typography>
                     </CardContent>
@@ -214,7 +213,7 @@ export default function CartPage() {
                           }
                           disabled={updating}
                           InputProps={{ inputProps: { min: 1 } }}
-                          sx={{ width: 80 }}
+                          sx={{ width: 100 }}
                         />
                         <Button
                           color="error"
@@ -241,6 +240,7 @@ export default function CartPage() {
           </Grid>
         )}
       </Container>
+      <Footer />
     </>
   );
 }
