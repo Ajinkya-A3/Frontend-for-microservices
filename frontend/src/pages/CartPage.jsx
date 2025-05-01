@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
   Container, Typography, Card, CardContent, Grid, CircularProgress,
-  Box, CardMedia, TextField, Button, Stack
+  Box, CardMedia, TextField, Button, Stack, IconButton
 } from '@mui/material';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const placeholderImage = 'https://placehold.co/200x150?text=Product+Image';
 
@@ -67,6 +68,19 @@ export default function CartPage() {
     alert(`Proceeding to buy "${item.name}"`);
   };
 
+  const handleEmptyCart = async () => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_CART}/clear`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchCart(); // Re-fetch the cart after emptying it
+    } catch (err) {
+      console.error('Error emptying the cart:', err);
+    }
+  };
+
   useEffect(() => {
     fetchCart();
   }, []);
@@ -86,6 +100,17 @@ export default function CartPage() {
         <Typography variant="h4" gutterBottom>
           Your Cart
         </Typography>
+        
+        {/* Empty Cart Button */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+          <IconButton color="error" onClick={handleEmptyCart}>
+            <DeleteIcon />
+            <Typography variant="body2" sx={{ ml: 1 }}>
+              Empty Cart
+            </Typography>
+          </IconButton>
+        </Box>
+
         {cartItems.length === 0 ? (
           <Typography>No items in cart.</Typography>
         ) : (
@@ -96,7 +121,7 @@ export default function CartPage() {
                   <CardMedia
                     component="img"
                     sx={{ width: 200 }}
-                    image={item.imageUrl || placeholderImage}
+                    image={item.image || placeholderImage} // Use image from API, fallback to placeholder
                     onError={(e) => { e.target.onerror = null; e.target.src = placeholderImage; }}
                     alt={item.name}
                   />
