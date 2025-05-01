@@ -13,7 +13,7 @@ import {
   Alert,
 } from '@mui/material';
 
-export default function ProductPage() {
+export default function Product() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
