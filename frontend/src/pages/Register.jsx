@@ -106,6 +106,7 @@ export default function Register() {
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        autoComplete="current-password"
                         error={!!nameError}
                         helperText={nameError}
                         sx={{ mb: 2 }}

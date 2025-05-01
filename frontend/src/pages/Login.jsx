@@ -88,6 +88,7 @@ export default function Login() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="current-password"
                         error={!!emailError}
                         helperText={emailError}
                         sx={{ marginBottom: 2 }}

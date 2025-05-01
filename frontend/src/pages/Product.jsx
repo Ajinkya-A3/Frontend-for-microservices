@@ -4,6 +4,7 @@ import { productAPI, reviewAPI, userAPI } from '../api';
 import Navbar from '../components/Navbar';
 import ProductDetailsCard from '../components/ProductDetailsCard';
 import CommentsSection from '../components/CommentsSection';
+import Footer from '../components/Footer';
 import {
   Container,
   Box,
@@ -170,6 +171,7 @@ export default function Product() {
           Review added successfully!
         </Alert>
       </Snackbar>
+      <Footer />
     </>
   );
 }

@@ -30,12 +30,6 @@ export default function Footer() {
                             <Link href="/about" underline="hover" sx={{ color: '#e3f2fd' }}>
                                 About
                             </Link>
-                            <Link href="/cart" underline="hover" sx={{ color: '#e3f2fd' }}>
-                                Cart
-                            </Link>
-                            <Link href="/orders" underline="hover" sx={{ color: '#e3f2fd' }}>
-                                Orders
-                            </Link>
                             <Link href="/contact" underline="hover" sx={{ color: '#e3f2fd' }}>
                                 Contact
                             </Link>

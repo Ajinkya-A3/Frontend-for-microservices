@@ -8,6 +8,8 @@ import ProductCard from '../components/ProductCard.jsx';
 import SnackbarComponent from '../components/SnackbarComponent.jsx'; // ✅ Importing SnackbarComponent
 import PaginationComponent from '../components/PaginationComponent.jsx'; // ✅ Importing PaginationComponent
 import SearchSortComponent from '../components/SearchSortComponent.jsx'; // ✅ Importing SearchSortComponent
+import Footer from '../components/Footer';
+
 
 export default function Home() {
     const [products, setProducts] = useState([]);
@@ -160,6 +162,7 @@ export default function Home() {
                 message="Product added to cart!"
                 autoHideDuration={1000}
             />
+            <Footer />
         </Container>
     );
 }
