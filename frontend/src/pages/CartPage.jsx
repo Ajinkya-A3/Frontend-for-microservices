@@ -63,7 +63,6 @@ export default function CartPage() {
   };
 
   const handleBuyNow = (item) => {
-    // Placeholder logic - replace with your Buy API logic
     console.log('Buying item:', item);
     alert(`Proceeding to buy "${item.name}"`);
   };
@@ -75,7 +74,7 @@ export default function CartPage() {
           Authorization: `Bearer ${token}`,
         },
       });
-      fetchCart(); // Re-fetch the cart after emptying it
+      fetchCart();
     } catch (err) {
       console.error('Error emptying the cart:', err);
     }
@@ -96,42 +95,115 @@ export default function CartPage() {
   return (
     <>
       <Navbar />
-      <Container sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Your Cart
-        </Typography>
-        
-        {/* Empty Cart Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-          <IconButton color="error" onClick={handleEmptyCart}>
+      <Container sx={{ mt: 4, px: { xs: 1, sm: 2, md: 4 } }}>
+        {/* Header Section */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 3,
+            flexWrap: 'wrap',
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
+              color: '#333',
+              textAlign: { xs: 'center', sm: 'left' },
+              width: { xs: '100%', sm: 'auto' },
+              mb: { xs: 2, sm: 0 },
+            }}
+          >
+            Your Cart
+          </Typography>
+
+          <IconButton
+            color="error"
+            onClick={handleEmptyCart}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              border: '1px solid #f44336',
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              '&:hover': {
+                backgroundColor: '#ffe6e6',
+              },
+            }}
+          >
             <DeleteIcon />
-            <Typography variant="body2" sx={{ ml: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
               Empty Cart
             </Typography>
           </IconButton>
         </Box>
 
         {cartItems.length === 0 ? (
-          <Typography>No items in cart.</Typography>
+          <Typography variant="h6" color="text.secondary" align="center" sx={{ mt: 6 }}>
+            No items in cart.
+          </Typography>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={3} justifyContent="center">
             {cartItems.map((item) => (
-              <Grid item xs={12} md={6} key={item._id}>
-                <Card sx={{ display: 'flex', boxShadow: 3 }}>
+              <Grid item xs={12} md={10} key={item._id}>
+                <Card
+                  sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: 'stretch',
+                    boxShadow: 4,
+                    borderRadius: 3,
+                    overflow: 'hidden',
+                    p: 2,
+                    bgcolor: '#fafafa',
+                  }}
+                >
                   <CardMedia
                     component="img"
-                    sx={{ width: 200 }}
-                    image={item.image || placeholderImage} // Use image from API, fallback to placeholder
-                    onError={(e) => { e.target.onerror = null; e.target.src = placeholderImage; }}
+                    sx={{
+                      width: { xs: '100%', sm: 200 },
+                      height: 200,
+                      objectFit: 'cover',
+                      borderRadius: 2,
+                      mr: { sm: 2 },
+                    }}
+                    image={item.image || placeholderImage}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = placeholderImage;
+                    }}
                     alt={item.name}
                   />
-                  <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                    <CardContent>
-                      <Typography variant="h6">{item.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">{item.description}</Typography>
-                      <Typography sx={{ mt: 1 }}>Price: ${item.price.toFixed(2)}</Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
+                    <CardContent sx={{ pb: 1 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                        {item.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {item.description}
+                      </Typography>
+                      <Typography variant="subtitle1" color="primary">
+                        Price: ${item.price.toFixed(2)}
+                      </Typography>
+                    </CardContent>
 
-                      <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 2 }}>
+                    <Box
+                      sx={{
+                        mt: 2,
+                        px: 2,
+                        pb: 2,
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 2,
+                      }}
+                    >
+                      <Stack direction="row" spacing={2} alignItems="center">
                         <TextField
                           type="number"
                           label="Qty"
@@ -142,16 +214,26 @@ export default function CartPage() {
                           }
                           disabled={updating}
                           InputProps={{ inputProps: { min: 1 } }}
-                          sx={{ width: 90 }}
+                          sx={{ width: 80 }}
                         />
-                        <Button color="error" variant="outlined" onClick={() => handleRemove(item.productId)}>
+                        <Button
+                          color="error"
+                          variant="outlined"
+                          onClick={() => handleRemove(item.productId)}
+                          sx={{ textTransform: 'none' }}
+                        >
                           Remove
                         </Button>
-                        <Button variant="contained" onClick={() => handleBuyNow(item)}>
-                          Buy Now
-                        </Button>
                       </Stack>
-                    </CardContent>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleBuyNow(item)}
+                        sx={{ textTransform: 'none', width: { xs: '100%', sm: 'auto' } }}
+                      >
+                        Buy Now
+                      </Button>
+                    </Box>
                   </Box>
                 </Card>
               </Grid>
