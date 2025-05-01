@@ -140,12 +140,22 @@ export default function ProductCard({ product, handleAddToCart }) {
                             borderRadius: 2,
                             textTransform: 'none',
                             fontWeight: 'bold',
-                            transition: '0.3s',
                             padding: '12px',
-                            backgroundColor: product.stock_quantity === 0 ? 'gray' : 'primary.main',
+                            color: 'white',
+                            background: product.stock_quantity === 0
+                                ? 'gray'
+                                : 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+                            backgroundSize: '200%',
+                            transition: 'all 0.4s ease',
                             '&:hover': {
                                 transform: 'scale(1.05)',
-                                backgroundColor: product.stock_quantity === 0 ? 'gray' : 'primary.dark',
+                                backgroundPosition: 'right',
+                                background: product.stock_quantity === 0
+                                    ? 'gray'
+                                    : 'linear-gradient(90deg, #00bcd4 0%, #2196f3 50%, #3f51b5 100%)',
+                            },
+                            '&:disabled': {
+                                cursor: 'not-allowed',
                             },
                         }}
                     >

@@ -42,6 +42,7 @@ const ProductDetailsCard = ({ product }) => {
                 <Button
                     variant="contained"
                     fullWidth
+                    disabled={product.stock_quantity === 0}
                     sx={{
                         mt: 3,
                         borderRadius: 2,
@@ -49,15 +50,28 @@ const ProductDetailsCard = ({ product }) => {
                         textTransform: 'none',
                         fontWeight: 'bold',
                         fontSize: '1rem',
+                        color: 'white',
+                        background: product.stock_quantity === 0
+                            ? 'gray'
+                            : 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+                        backgroundSize: '200%',
+                        transition: 'all 0.4s ease',
                         '&:hover': {
-                            backgroundColor: 'primary.dark',
-                            transform: 'scale(1.02)',
+                            transform: 'scale(1.05)',
+                            backgroundPosition: 'right',
+                            background: product.stock_quantity === 0
+                                ? 'gray'
+                                : 'linear-gradient(90deg, #00bcd4 0%, #2196f3 50%, #3f51b5 100%)',
                         },
-                        transition: 'all 0.3s ease-in-out',
+                        '&:disabled': {
+                            cursor: 'not-allowed',
+                        },
                     }}
                 >
-                    Add to Cart
+                    {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
                 </Button>
+
+
             </CardContent>
         </Card>
     );

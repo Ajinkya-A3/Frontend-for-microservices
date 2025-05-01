@@ -78,10 +78,27 @@ const CommentsSection = ({
             textTransform: 'none',
             px: 4,
             alignSelf: 'flex-start',
+            color: 'white',
+            background: isSubmitDisabled || !newComment.trim() || !rating
+              ? 'gray'
+              : 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+            backgroundSize: '200%',
+            transition: 'all 0.4s ease',
+            '&:hover': {
+              transform: 'scale(1.05)',
+              backgroundPosition: 'right',
+              background: isSubmitDisabled || !newComment.trim() || !rating
+                ? 'gray'
+                : 'linear-gradient(90deg, #00bcd4 0%, #2196f3 50%, #3f51b5 100%)',
+            },
+            '&:disabled': {
+              cursor: 'not-allowed',
+            },
           }}
         >
           Submit Review
         </Button>
+
       </Box>
     </Paper>
   );

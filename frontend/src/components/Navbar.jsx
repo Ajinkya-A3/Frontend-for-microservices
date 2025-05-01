@@ -1,5 +1,10 @@
-import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Box, ListItemIcon, Divider } from '@mui/material';
-import { AccountCircle, Info, ShoppingCart, Assignment, Logout } from '@mui/icons-material';
+import {
+  AppBar, Toolbar, Typography, IconButton, Menu, MenuItem, Box,
+  ListItemIcon, Divider, Tooltip
+} from '@mui/material';
+import {
+  AccountCircle, Info, ShoppingCart, Assignment, Logout
+} from '@mui/icons-material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,10 +12,7 @@ export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
+  const handleMenu = (event) => setAnchorEl(event.currentTarget);
   const handleClose = (path) => {
     setAnchorEl(null);
     if (path) navigate(path);
@@ -25,42 +27,45 @@ export default function Navbar() {
     <AppBar
       position="static"
       sx={{
-        background: 'linear-gradient(90deg, #1976d2 0%, #42a5f5 100%)',
-        boxShadow: 3,
+        background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+        boxShadow: 4,
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: { xs: 1, sm: 3 } }}>
 
-        {/* Logo Section */}
+        {/* Logo / Brand */}
         <Typography
           variant="h5"
           onClick={() => navigate('/home')}
           sx={{
-            fontWeight: 'bold',
+            fontWeight: 700,
             cursor: 'pointer',
-            color: 'white',
-            letterSpacing: 1,
+            color: '#fff',
+            letterSpacing: 2,
+            fontFamily: 'Roboto, sans-serif',
           }}
         >
-          🛒 MyShop
+          🛒 KubeCart
         </Typography>
 
-        {/* Profile Icon Section */}
+        {/* Profile Icon */}
         <Box>
-          <IconButton
-            size="large"
-            color="inherit"
-            onClick={handleMenu}
-            sx={{
-              transition: '0.3s',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                transform: 'scale(1.1)',
-              },
-            }}
-          >
-            <AccountCircle fontSize="large" />
-          </IconButton>
+          <Tooltip title="Account Menu">
+            <IconButton
+              onClick={handleMenu}
+              size="large"
+              sx={{
+                color: '#fff',
+                transition: '0.3s',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'scale(1.1)',
+                },
+              }}
+            >
+              <AccountCircle fontSize="large" />
+            </IconButton>
+          </Tooltip>
 
           <Menu
             anchorEl={anchorEl}
@@ -71,35 +76,26 @@ export default function Navbar() {
             sx={{ mt: 1 }}
           >
             <MenuItem onClick={() => handleClose('/about')}>
-              <ListItemIcon>
-                <Info fontSize="small" />
-              </ListItemIcon>
+              <ListItemIcon><Info fontSize="small" /></ListItemIcon>
               About Me
             </MenuItem>
             <MenuItem onClick={() => handleClose('/cart')}>
-              <ListItemIcon>
-                <ShoppingCart fontSize="small" />
-              </ListItemIcon>
+              <ListItemIcon><ShoppingCart fontSize="small" /></ListItemIcon>
               Cart
             </MenuItem>
             <MenuItem onClick={() => handleClose('/orders')}>
-              <ListItemIcon>
-                <Assignment fontSize="small" />
-              </ListItemIcon>
+              <ListItemIcon><Assignment fontSize="small" /></ListItemIcon>
               Orders
             </MenuItem>
 
             <Divider />
 
             <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <Logout fontSize="small" />
-              </ListItemIcon>
+              <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
               Logout
             </MenuItem>
           </Menu>
         </Box>
-
       </Toolbar>
     </AppBar>
   );
