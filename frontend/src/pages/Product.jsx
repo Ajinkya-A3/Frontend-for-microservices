@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { productAPI, reviewAPI } from '../api/index.js';
+import { productAPI, reviewAPI, userAPI } from '../api';
 import Navbar from '../components/Navbar';
 import ProductDetailsCard from '../components/ProductDetailsCard';
 import CommentsSection from '../components/CommentsSection';
@@ -21,13 +21,15 @@ export default function ProductPage() {
   const [newComment, setNewComment] = useState('');
   const [rating, setRating] = useState(0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
 
   // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await productAPI.get(`/${id}`);
-        setProduct(response.data);
+        const { data } = await productAPI.get(`/${id}`);
+        setProduct(data);
       } catch (err) {
         console.error('Error fetching product:', err);
       } finally {
@@ -37,12 +39,12 @@ export default function ProductPage() {
     fetchProduct();
   }, [id]);
 
-  // Fetch reviews for the product
+  // Fetch reviews
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await reviewAPI.get(`/${id}`);
-        setReviews(response.data);
+        const { data } = await reviewAPI.get(`/${id}`);
+        setReviews(data);
       } catch (err) {
         console.error('Error fetching reviews:', err);
       }
@@ -50,18 +52,53 @@ export default function ProductPage() {
     fetchReviews();
   }, [id]);
 
-  // Add a new review
+  // Fetch logged-in user
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setUserLoading(false);
+        return;
+      }
+
+      try {
+        const { data } = await userAPI.get('/user', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (data?.name) {
+          setUser({ name: data.name });
+        }
+      } catch (err) {
+        console.error('Error fetching user:', err);
+      } finally {
+        setUserLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  // Handle review submission
   const handleAddComment = async () => {
     if (!newComment.trim() || !rating) return;
 
+    const token = localStorage.getItem('token');
+    if (!token || !user?.name) {
+      alert('Please log in to submit a review.');
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
-      const response = await reviewAPI.post(
+      // Add user.name to the comment submission
+      const { data } = await reviewAPI.post(
         '/',
         {
           productId: id,
           reviewText: newComment,
           rating,
+          userName: user.name, // Use user name here directly
         },
         {
           headers: {
@@ -71,7 +108,11 @@ export default function ProductPage() {
         }
       );
 
-      setReviews((prev) => [...prev, response.data]);
+      // Check if the comment is added correctly
+      console.log('Review added:', data);
+
+      // Update the reviews list immediately with the correct user name
+      setReviews((prev) => [{ ...data, userName: user.name }, ...prev]); // Ensuring the correct username here
       setNewComment('');
       setRating(0);
       setOpenSnackbar(true);
@@ -80,9 +121,7 @@ export default function ProductPage() {
     }
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  const handleCloseSnackbar = () => setOpenSnackbar(false);
 
   if (loading) {
     return (
@@ -112,6 +151,7 @@ export default function ProductPage() {
           handleAddComment={handleAddComment}
           rating={rating}
           setRating={setRating}
+          isSubmitDisabled={!user || !user.name || !newComment.trim() || !rating || userLoading}
         />
       </Container>
 
@@ -121,7 +161,12 @@ export default function ProductPage() {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="success" variant="filled" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
           Review added successfully!
         </Alert>
       </Snackbar>

@@ -18,6 +18,7 @@ const CommentsSection = ({
   handleAddComment,
   rating,
   setRating,
+  isSubmitDisabled,
 }) => {
   return (
     <Paper elevation={3} sx={{ mt: 5, p: { xs: 2, sm: 4 }, borderRadius: 3 }}>
@@ -27,8 +28,8 @@ const CommentsSection = ({
 
       {/* List of Reviews */}
       <List sx={{ mb: 2 }}>
-        {comments.map((comment) => (
-          <Box key={comment._id || comment.id}>
+        {comments.map((comment, index) => (
+          <Box key={comment._id || comment.id || index}>
             <ListItem alignItems="flex-start">
               <ListItemText
                 primary={
@@ -71,7 +72,7 @@ const CommentsSection = ({
         <Button
           variant="contained"
           onClick={handleAddComment}
-          disabled={!newComment.trim() || !rating}
+          disabled={isSubmitDisabled || !newComment.trim() || !rating}
           sx={{
             fontWeight: 'bold',
             textTransform: 'none',
