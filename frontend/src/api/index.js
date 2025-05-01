@@ -15,3 +15,7 @@ export const reviewAPI = axios.create({
     'Content-Type': 'application/json',
   }
 });
+
+const cartAPI = axios.create({
+  baseURL: import.meta.env.VITE_API_CART,
+});
