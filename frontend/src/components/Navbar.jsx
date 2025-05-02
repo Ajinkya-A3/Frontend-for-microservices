@@ -77,7 +77,7 @@ export default function Navbar() {
           >
             <MenuItem onClick={() => handleClose('/about')}>
               <ListItemIcon><Info fontSize="small" /></ListItemIcon>
-              About Me
+              Profile
             </MenuItem>
             <MenuItem onClick={() => handleClose('/cart')}>
               <ListItemIcon><ShoppingCart fontSize="small" /></ListItemIcon>
