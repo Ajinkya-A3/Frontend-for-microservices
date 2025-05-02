@@ -3,71 +3,70 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Typography, Button, Box, CardMedia } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import ImageViewModal from './ImageViewModal'; // Import the ImageViewModal
+import ImageViewModal from './ImageViewModal';
 
 const placeholderImage = 'https://media.extra.com/s/aurora/100315775_800/Apple-iPhone-14-Pro-Max%2C-5G%2C-128GB%2C-Space-Black?locale=en-GB,en-*,*';
 
 export default function ProductCard({ product, handleAddToCart }) {
     const navigate = useNavigate();
-    const [openImageModal, setOpenImageModal] = useState(false); // Modal state
-    const [modalImageUrl, setModalImageUrl] = useState(''); // Store image URL for modal
+    const [openImageModal, setOpenImageModal] = useState(false);
+    const [modalImageUrl, setModalImageUrl] = useState('');
 
     const handleCardClick = () => {
         navigate(`/product/${product._id}`);
     };
 
-    const handleImageClick = () => {
-        setModalImageUrl(placeholderImage); // Set the image for the modal
-        setOpenImageModal(true); // Open the image modal
+    const handleImageClick = (e) => {
+        e.stopPropagation(); // Prevent card click
+        setModalImageUrl(placeholderImage);
+        setOpenImageModal(true);
     };
 
     const handleCloseModal = () => {
-        setOpenImageModal(false); // Close the image modal
+        setOpenImageModal(false);
     };
 
     return (
         <>
             <Card
                 sx={{
-                    width: 250,
-                    height: 450,
+                    width: { xs: '100%', sm: 280, md: 300 },
+                    height: 480,
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    borderRadius: 3,
-                    boxShadow: 3,
+                    borderRadius: 4,
+                    boxShadow: 4,
                     transition: '0.3s',
                     cursor: 'pointer',
                     overflow: 'hidden',
-                    border: '1px solid #ddd', // Adding a border to the card
+                    border: '1px solid #ccc',
+                    m: 1,
                     '&:hover': {
-                        transform: 'scale(1.05)',
+                        transform: 'scale(1.03)',
                         boxShadow: 6,
                     },
                 }}
             >
-                <Box onClick={handleCardClick} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                    {/* Card Image */}
+                <Box onClick={handleCardClick} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
                     <CardMedia
                         component="img"
                         image={placeholderImage}
                         alt={product.name}
-                        onClick={handleImageClick} // Click on the image to open modal
+                        onClick={handleImageClick}
                         sx={{
-                            height: 180,
+                            height: 200,
                             objectFit: 'cover',
-                            borderTopLeftRadius: 12,
-                            borderTopRightRadius: 12,
-                            cursor: 'zoom-in', // Cursor change to indicate zoom action
+                            cursor: 'zoom-in',
                         }}
                     />
                     <CardContent
                         sx={{
-                            flexGrow: 1,
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
-                            padding: 2,
+                            flexGrow: 1,
+                            p: 2,
                         }}
                     >
                         <Box>
@@ -79,7 +78,6 @@ export default function ProductCard({ product, handleAddToCart }) {
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
                                     fontSize: '1.1rem',
-                                    lineHeight: 1.3,
                                 }}
                             >
                                 {product.name}
@@ -101,10 +99,10 @@ export default function ProductCard({ product, handleAddToCart }) {
                                 variant="body2"
                                 color="text.secondary"
                                 sx={{
-                                    overflow: 'hidden',
                                     display: '-webkit-box',
                                     WebkitLineClamp: 2,
                                     WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
                                     mt: 1,
                                     fontSize: '0.85rem',
                                 }}
@@ -137,10 +135,10 @@ export default function ProductCard({ product, handleAddToCart }) {
                         onClick={() => handleAddToCart(product)}
                         disabled={product.stock_quantity === 0}
                         sx={{
-                            borderRadius: 2,
+                            borderRadius: 3,
                             textTransform: 'none',
                             fontWeight: 'bold',
-                            padding: '12px',
+                            py: 1.5,
                             color: 'white',
                             background: product.stock_quantity === 0
                                 ? 'gray'
@@ -164,7 +162,6 @@ export default function ProductCard({ product, handleAddToCart }) {
                 </Box>
             </Card>
 
-            {/* Image View Modal */}
             <ImageViewModal open={openImageModal} imageUrl={modalImageUrl} onClose={handleCloseModal} />
         </>
     );
