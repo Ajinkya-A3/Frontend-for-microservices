@@ -1,87 +1,93 @@
-// src/components/SearchSortComponent.jsx
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import { TextField, MenuItem, Box } from '@mui/material';
+import { TextField, MenuItem, Box, InputAdornment, Paper } from '@mui/material';
 
 const SearchSortComponent = ({ searchQuery, setSearchQuery, sortOrder, setSortOrder }) => {
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+  const handleSortChange = (e) => setSortOrder(e.target.value);
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 3,
+        mb: 4,
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      {/* Search Input */}
+      <Paper
+        elevation={4}
+        sx={{
+          px: 2,
+          py: 1,
+          borderRadius: '12px',
+          background: 'linear-gradient(145deg, #ffffff, #f0f0f0)',
+          width: { xs: '90%', sm: '400px' },
+        }}
+      >
+        <TextField
+          fullWidth
+          variant="standard"
+          placeholder="Search for products..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          InputProps={{
+            disableUnderline: true,
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: '#3f51b5' }} />
+              </InputAdornment>
+            ),
+            sx: {
+              pl: 1,
+              fontSize: '1rem',
+              color: 'text.primary',
+            },
+          }}
+        />
+      </Paper>
 
-    const handleSortChange = (e) => {
-        setSortOrder(e.target.value);
-    };
-
-    return (
-        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {/* Search Field */}
-            <TextField
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                size="medium"
-                variant="outlined"
-                sx={{
-                    width: { xs: '100%', sm: '400px' },
-                    backgroundColor: '#fff',
-                    borderRadius: 2,
-                    boxShadow: 2,
-                    '& .MuiOutlinedInput-root': {
-                        borderRadius: 2,  // Ensures consistent rounded corners
-                        '& fieldset': {
-                            borderColor: '#ddd',  // Set border color
-                        },
-                        '&:hover fieldset': {
-                            borderColor: '#3f51b5',  // Border color on hover
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: '#3f51b5',  // Focused border color
-                        },
-                    },
-                }}
-                InputProps={{
-                    startAdornment: (
-                        <SearchIcon sx={{ color: 'gray', mr: 1 }} />
-                    ),
-                    style: {
-                        paddingLeft: '12px', // Ensures text starts with padding
-                    },
-                }}
-            />
-
-            {/* Sort By Price Field */}
-            <TextField
-                label="Sort by Price"
-                select
-                value={sortOrder}
-                onChange={handleSortChange}
-                size="medium"
-                variant="outlined"
-                sx={{
-                    width: { xs: '100%', sm: '200px' },
-                    backgroundColor: '#fff',
-                    borderRadius: 2,
-                    boxShadow: 2,
-                    '& .MuiOutlinedInput-root': {
-                        borderRadius: 2,
-                        '& fieldset': {
-                            borderColor: '#ddd',
-                        },
-                        '&:hover fieldset': {
-                            borderColor: '#3f51b5',
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: '#3f51b5',
-                        },
-                    },
-                }}
-            >
-                <MenuItem value="asc">Low to High</MenuItem>
-                <MenuItem value="desc">High to Low</MenuItem>
-            </TextField>
-        </Box>
-    );
+      {/* Sort Dropdown */}
+      <Paper
+        elevation={4}
+        sx={{
+          px: 2,
+          py: 1,
+          borderRadius: '12px',
+          background: 'linear-gradient(145deg, #ffffff, #f0f0f0)',
+          width: { xs: '90%', sm: '200px' },
+        }}
+      >
+        <TextField
+          fullWidth
+          variant="standard"
+          select
+          label="Sort by Price"
+          value={sortOrder}
+          onChange={handleSortChange}
+          InputProps={{
+            disableUnderline: true,
+            sx: {
+              fontSize: '1rem',
+              color: 'text.primary',
+            },
+          }}
+          InputLabelProps={{
+            sx: {
+              fontWeight: 'bold',
+              color: '#3f51b5',
+            },
+          }}
+        >
+          <MenuItem value="asc">Low to High</MenuItem>
+          <MenuItem value="desc">High to Low</MenuItem>
+        </TextField>
+      </Paper>
+    </Box>
+  );
 };
 
 export default SearchSortComponent;
