@@ -106,6 +106,7 @@ export default function CartPage() {
             alignItems: 'center',
             mb: 3,
             flexWrap: 'wrap',
+            gap: 2,
           }}
         >
           <Typography
@@ -115,31 +116,54 @@ export default function CartPage() {
               color: '#333',
               textAlign: { xs: 'center', sm: 'left' },
               width: { xs: '100%', sm: 'auto' },
-              mb: { xs: 2, sm: 0 },
             }}
           >
             Your Cart
           </Typography>
 
-          <IconButton
-            color="error"
-            onClick={handleEmptyCart}
-            sx={{
-              border: '1px solid #f44336',
-              px: 2,
-              py: 1,
-              borderRadius: 2,
-              '&:hover': {
-                backgroundColor: '#ffe6e6',
-              },
-            }}
-          >
-            <DeleteIcon />
-            <Typography variant="body2" sx={{ fontWeight: 'bold', ml: 1 }}>
-              Empty Cart
-            </Typography>
-          </IconButton>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            <Button
+              onClick={() => alert('Proceeding to buy entire cart (dummy action)')}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 'bold',
+                color: '#fff',
+                px: 3,
+                py: 1.2,
+                borderRadius: 3,
+                background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+                boxShadow: 3,
+                transition: 'transform 0.3s, background-color 0.3s',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  backgroundColor: '#2196f3',
+                },
+              }}
+            >
+              Buy Entire Cart
+            </Button>
+
+            <IconButton
+              color="error"
+              onClick={handleEmptyCart}
+              sx={{
+                border: '1px solid #f44336',
+                px: 2,
+                py: 1,
+                borderRadius: 2,
+                '&:hover': {
+                  backgroundColor: '#ffe6e6',
+                },
+              }}
+            >
+              <DeleteIcon />
+              <Typography variant="body2" sx={{ fontWeight: 'bold', ml: 1 }}>
+                Empty Cart
+              </Typography>
+            </IconButton>
+          </Box>
         </Box>
+
 
         {cartItems.length === 0 ? (
           <Typography variant="h6" color="text.secondary" align="center" sx={{ mt: 6 }}>
@@ -213,25 +237,74 @@ export default function CartPage() {
                           }
                           disabled={updating}
                           InputProps={{ inputProps: { min: 1 } }}
-                          sx={{ width: 100 }}
+                          sx={{
+                            width: 100,
+                            '& .MuiInputBase-root': {
+                              borderRadius: 2,
+                              backgroundColor: '#f0f4ff',
+                              border: '1px solid #90caf9',
+                              fontWeight: 'bold',
+                              paddingX: 1,
+                              '&:hover': {
+                                backgroundColor: '#e3f2fd',
+                                borderColor: '#42a5f5',
+                              },
+                            },
+                            '& .MuiInputLabel-root': {
+                              color: '#1976d2',
+                              fontWeight: 'bold',
+                            },
+                            '& .MuiInputLabel-root.Mui-focused': {
+                              color: '#1565c0',
+                            },
+                          }}
                         />
+
                         <Button
-                          color="error"
-                          variant="outlined"
                           onClick={() => handleRemove(item.productId)}
-                          sx={{ textTransform: 'none' }}
+                          startIcon={<DeleteIcon />}
+                          sx={{
+                            color: '#f44336',
+                            border: '1px solid #f44336',
+                            px: 2,
+                            py: 1,
+                            borderRadius: 2,
+                            fontWeight: 'bold',
+                            textTransform: 'none',
+                            transition: '0.3s',
+                            '&:hover': {
+                              backgroundColor: '#ffe6e6',
+                              transform: 'scale(1.05)',
+                            },
+                          }}
                         >
                           Remove
                         </Button>
+
                       </Stack>
                       <Button
                         variant="contained"
-                        color="primary"
                         onClick={() => handleBuyNow(item)}
-                        sx={{ textTransform: 'none', width: { xs: '100%', sm: 'auto' } }}
+                        sx={{
+                          textTransform: 'none',
+                          fontWeight: 'bold',
+                          color: '#fff',
+                          px: 3,
+                          py: 1.2,
+                          borderRadius: 3,
+                          background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+                          boxShadow: 3,
+                          width: { xs: '100%', sm: 'auto' },
+                          transition: 'transform 0.3s, background-color 0.3s',
+                          '&:hover': {
+                            transform: 'scale(1.05)',
+                            backgroundColor: '#2196f3',
+                          },
+                        }}
                       >
                         Buy Now
                       </Button>
+
                     </Box>
                   </Box>
                 </Card>
