@@ -1,8 +1,14 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { userAPI } from '../api/index.js';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
-import { Link } from "react-router-dom";
+import {
+    Container,
+    TextField,
+    Button,
+    Typography,
+    CircularProgress,
+    Box
+} from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -50,11 +56,6 @@ export default function Login() {
             toast.success('Login successful!', {
                 position: 'top-center',
                 autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
                 style: {
                     background: '#121212',
                     color: '#fff',
@@ -69,15 +70,9 @@ export default function Login() {
 
             setTimeout(() => navigate('/home'), 2500);
         } catch (err) {
-            console.error('Login failed:', err);
             toast.error('Login failed! Please check your credentials.', {
                 position: 'top-center',
                 autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
                 style: {
                     background: '#121212',
                     color: '#fff',
@@ -100,8 +95,7 @@ export default function Login() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 minHeight: '100vh',
-                background: 'url("https://your-image-url.com") no-repeat center center fixed',
-                backgroundSize: 'cover',
+                px: 2,
             }}
         >
             <Container
@@ -112,9 +106,12 @@ export default function Login() {
                     borderRadius: '8px',
                     boxShadow: 3,
                     textAlign: 'center',
+                    width: '100%',
                 }}
             >
-                <Typography variant="h4" gutterBottom color="primary">Login</Typography>
+                <Typography variant="h4" gutterBottom color="primary">
+                    Login
+                </Typography>
 
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -128,7 +125,7 @@ export default function Login() {
                         autoComplete="email"
                         error={!!emailError}
                         helperText={emailError}
-                        sx={{ marginBottom: 2 }}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         label="Password"
@@ -140,7 +137,7 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         error={!!passwordError}
                         helperText={passwordError}
-                        sx={{ marginBottom: 2 }}
+                        sx={{ mb: 2 }}
                     />
 
                     <Button
@@ -150,7 +147,7 @@ export default function Login() {
                         sx={{ mt: 2, padding: '10px', fontSize: '16px' }}
                         disabled={loading}
                     >
-                        {loading ? 'Logging in...' : 'Login'}
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
                     </Button>
 
                     <Box sx={{ textAlign: 'center', marginTop: 2 }}>
