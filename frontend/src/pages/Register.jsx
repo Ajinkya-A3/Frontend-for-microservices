@@ -115,7 +115,6 @@ export default function Register() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 minHeight: '100vh',
-                // background: 'linear-gradient(to right, #4facfe, #00f2fe)',
                 padding: 2,
             }}
         >

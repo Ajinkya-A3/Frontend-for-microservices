@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { userAPI } from '../api/index.js';
 import {
-    Container,
     TextField,
     Button,
     Typography,
     CircularProgress,
-    Box
+    Box,
+    Paper
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -95,21 +95,21 @@ export default function Login() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 minHeight: '100vh',
-                px: 2,
+                padding: 2,
             }}
         >
-            <Container
-                maxWidth="xs"
+            <Paper
+                elevation={6}
                 sx={{
-                    padding: 3,
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    boxShadow: 3,
+                    backdropFilter: 'blur(10px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    borderRadius: 4,
+                    padding: { xs: 3, sm: 5 },
+                    width: { xs: '100%', sm: 400 },
                     textAlign: 'center',
-                    width: '100%',
                 }}
             >
-                <Typography variant="h4" gutterBottom color="primary">
+                <Typography variant="h4" color="primary" gutterBottom fontWeight="bold">
                     Login
                 </Typography>
 
@@ -125,7 +125,6 @@ export default function Login() {
                         autoComplete="email"
                         error={!!emailError}
                         helperText={emailError}
-                        sx={{ mb: 2 }}
                     />
                     <TextField
                         label="Password"
@@ -137,29 +136,27 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         error={!!passwordError}
                         helperText={passwordError}
-                        sx={{ mb: 2 }}
                     />
 
                     <Button
                         type="submit"
                         variant="contained"
+                        color="primary"
                         fullWidth
-                        sx={{ mt: 2, padding: '10px', fontSize: '16px' }}
+                        sx={{ mt: 3, py: 1.5, fontSize: '1rem', fontWeight: 'bold' }}
                         disabled={loading}
                     >
                         {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
                     </Button>
 
-                    <Box sx={{ textAlign: 'center', marginTop: 2 }}>
-                        <Typography variant="body2" color="textSecondary">
-                            Don't have an account?{' '}
-                            <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>
-                                Register
-                            </Link>
-                        </Typography>
-                    </Box>
+                    <Typography variant="body2" sx={{ mt: 2 }}>
+                        Don't have an account?{' '}
+                        <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>
+                            Register
+                        </Link>
+                    </Typography>
                 </form>
-            </Container>
+            </Paper>
             <ToastContainer />
         </Box>
     );
