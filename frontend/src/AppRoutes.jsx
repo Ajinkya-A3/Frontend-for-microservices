@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import Product from "./pages/Product"; // <<< This must match your actual exported function!
+import Product from "./pages/Product";
 import AboutMe from "./components/AboutMe";
 import CartPage from "./pages/CartPage";
 import OrdersPage from "./pages/OrdersPage";

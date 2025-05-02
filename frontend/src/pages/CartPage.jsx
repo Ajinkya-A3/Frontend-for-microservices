@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
-import Footer from '../components/Footer';
-
-import {
-  Container, Typography, Card, CardContent, Grid, CircularProgress,
-  Box, CardMedia, TextField, Button, Stack, IconButton
-} from '@mui/material';
+import { Container, CircularProgress, Typography, Box, Grid } from '@mui/material';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-const placeholderImage = 'https://placehold.co/300x200?text=Product+Image';
+import Footer from '../components/Footer';
+import CartHeader from '../components/CartHeader';
+import CartItemCard from '../components/CartItemCard';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -21,9 +16,7 @@ export default function CartPage() {
     try {
       setLoading(true);
       const res = await axios.get(import.meta.env.VITE_API_CART + '/', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setCartItems(res.data.items || []);
     } catch (err) {
@@ -33,15 +26,15 @@ export default function CartPage() {
     }
   };
 
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
   const handleQuantityChange = async (productId, newQty) => {
     try {
       setUpdating(true);
-      await axios.put(`${import.meta.env.VITE_API_CART}/update/${productId}`, {
-        quantity: newQty,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      await axios.put(`${import.meta.env.VITE_API_CART}/update/${productId}`, { quantity: newQty }, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       fetchCart();
     } catch (err) {
@@ -54,9 +47,7 @@ export default function CartPage() {
   const handleRemove = async (productId) => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_CART}/remove/${productId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       fetchCart();
     } catch (err) {
@@ -65,26 +56,19 @@ export default function CartPage() {
   };
 
   const handleBuyNow = (item) => {
-    console.log('Buying item:', item);
     alert(`Proceeding to buy "${item.name}"`);
   };
 
   const handleEmptyCart = async () => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_CART}/clear`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       fetchCart();
     } catch (err) {
       console.error('Error emptying the cart:', err);
     }
   };
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
 
   if (loading) {
     return (
@@ -98,216 +82,22 @@ export default function CartPage() {
     <>
       <Navbar />
       <Container sx={{ mt: 4, px: { xs: 1, sm: 2, md: 4 } }}>
-        {/* Header Section */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 3,
-            flexWrap: 'wrap',
-            gap: 2,
-          }}
-        >
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 'bold',
-              color: '#333',
-              textAlign: { xs: 'center', sm: 'left' },
-              width: { xs: '100%', sm: 'auto' },
-            }}
-          >
-            Your Cart
-          </Typography>
-
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button
-              onClick={() => alert('Proceeding to buy entire cart (dummy action)')}
-              sx={{
-                textTransform: 'none',
-                fontWeight: 'bold',
-                color: '#fff',
-                px: 3,
-                py: 1.2,
-                borderRadius: 3,
-                background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
-                boxShadow: 3,
-                transition: 'transform 0.3s, background-color 0.3s',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  backgroundColor: '#2196f3',
-                },
-              }}
-            >
-              Buy Entire Cart
-            </Button>
-
-            <IconButton
-              color="error"
-              onClick={handleEmptyCart}
-              sx={{
-                border: '1px solid #f44336',
-                px: 2,
-                py: 1,
-                borderRadius: 2,
-                '&:hover': {
-                  backgroundColor: '#ffe6e6',
-                },
-              }}
-            >
-              <DeleteIcon />
-              <Typography variant="body2" sx={{ fontWeight: 'bold', ml: 1 }}>
-                Empty Cart
-              </Typography>
-            </IconButton>
-          </Box>
-        </Box>
-
-
+        <CartHeader onBuyAll={() => alert('Buying entire cart')} onEmpty={handleEmptyCart} />
         {cartItems.length === 0 ? (
-          <Typography variant="h6" color="text.secondary" align="center" sx={{ mt: 6 }}>
+          <Typography variant="h6" align="center" sx={{ mt: 6 }} color="text.secondary">
             No items in cart.
           </Typography>
         ) : (
           <Grid container spacing={4} justifyContent="center">
             {cartItems.map((item) => (
               <Grid item xs={12} sm={10} md={9} lg={8} key={item._id}>
-                <Card
-                  sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' },
-                    alignItems: 'stretch',
-                    boxShadow: 6,
-                    borderRadius: 3,
-                    overflow: 'hidden',
-                    p: { xs: 1, sm: 2 },
-                    bgcolor: '#fdfdfd',
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      width: { xs: '100%', sm: 300 },
-                      height: { xs: 200, sm: 250 },
-                      objectFit: 'cover',
-                      borderRadius: 2,
-                      mr: { sm: 3 },
-                    }}
-                    image={item.image || placeholderImage}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = placeholderImage;
-                    }}
-                    alt={item.name}
-                  />
-                  <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
-                    <CardContent>
-                      <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                        {item.description}
-                      </Typography>
-                      <Typography variant="h6" color="primary">
-                        Price: ${item.price.toFixed(2)}
-                      </Typography>
-                    </CardContent>
-
-                    <Box
-                      sx={{
-                        mt: 2,
-                        px: 2,
-                        pb: 2,
-                        display: 'flex',
-                        flexDirection: { xs: 'column', sm: 'row' },
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: 2,
-                      }}
-                    >
-                      <Stack direction="row" spacing={2} alignItems="center">
-                        <TextField
-                          type="number"
-                          label="Qty"
-                          size="small"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            handleQuantityChange(item.productId, Math.max(1, parseInt(e.target.value)))
-                          }
-                          disabled={updating}
-                          InputProps={{ inputProps: { min: 1 } }}
-                          sx={{
-                            width: 100,
-                            '& .MuiInputBase-root': {
-                              borderRadius: 2,
-                              backgroundColor: '#f0f4ff',
-                              border: '1px solid #90caf9',
-                              fontWeight: 'bold',
-                              paddingX: 1,
-                              '&:hover': {
-                                backgroundColor: '#e3f2fd',
-                                borderColor: '#42a5f5',
-                              },
-                            },
-                            '& .MuiInputLabel-root': {
-                              color: '#1976d2',
-                              fontWeight: 'bold',
-                            },
-                            '& .MuiInputLabel-root.Mui-focused': {
-                              color: '#1565c0',
-                            },
-                          }}
-                        />
-
-                        <Button
-                          onClick={() => handleRemove(item.productId)}
-                          startIcon={<DeleteIcon />}
-                          sx={{
-                            color: '#f44336',
-                            border: '1px solid #f44336',
-                            px: 2,
-                            py: 1,
-                            borderRadius: 2,
-                            fontWeight: 'bold',
-                            textTransform: 'none',
-                            transition: '0.3s',
-                            '&:hover': {
-                              backgroundColor: '#ffe6e6',
-                              transform: 'scale(1.05)',
-                            },
-                          }}
-                        >
-                          Remove
-                        </Button>
-
-                      </Stack>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleBuyNow(item)}
-                        sx={{
-                          textTransform: 'none',
-                          fontWeight: 'bold',
-                          color: '#fff',
-                          px: 3,
-                          py: 1.2,
-                          borderRadius: 3,
-                          background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
-                          boxShadow: 3,
-                          width: { xs: '100%', sm: 'auto' },
-                          transition: 'transform 0.3s, background-color 0.3s',
-                          '&:hover': {
-                            transform: 'scale(1.05)',
-                            backgroundColor: '#2196f3',
-                          },
-                        }}
-                      >
-                        Buy Now
-                      </Button>
-
-                    </Box>
-                  </Box>
-                </Card>
+                <CartItemCard
+                  item={item}
+                  updating={updating}
+                  onQuantityChange={handleQuantityChange}
+                  onRemove={handleRemove}
+                  onBuyNow={handleBuyNow}
+                />
               </Grid>
             ))}
           </Grid>
