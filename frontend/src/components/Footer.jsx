@@ -21,7 +21,7 @@ export default function Footer() {
                         </Typography>
                         <Typography variant="body1" sx={{ maxWidth: 450 }}>
                             Your one-stop shop for quality products and lightning-fast delivery.
-                            Built with ❤️ using Microservices, Docker, and Kubernetes.
+                            Built By using Microservices, Docker, and Kubernetes.
                         </Typography>
                     </Grid>
 
