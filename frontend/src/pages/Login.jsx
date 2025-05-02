@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { userAPI } from '../api/index.js';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -44,12 +45,50 @@ export default function Login() {
         try {
             setLoading(true);
             const res = await userAPI.post('/login', { email, password });
-            console.log('Login success:', res.data);
             localStorage.setItem('token', res.data.token);
-            navigate('/home');
+
+            toast.success('Login successful!', {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                style: {
+                    background: '#121212',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    borderRadius: '8px',
+                },
+                progressStyle: {
+                    background: '#00e676'
+                },
+            });
+
+            setTimeout(() => navigate('/home'), 2500);
         } catch (err) {
             console.error('Login failed:', err);
-            setError('Login failed. Please check your credentials and try again.');
+            toast.error('Login failed! Please check your credentials.', {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                style: {
+                    background: '#121212',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    borderRadius: '8px',
+                },
+                progressStyle: {
+                    background: '#f44336'
+                },
+            });
             setLoading(false);
         }
     };
@@ -60,7 +99,7 @@ export default function Login() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                minHeight: '100vh',  // Ensures the container fills the full screen height
+                minHeight: '100vh',
                 background: 'url("https://your-image-url.com") no-repeat center center fixed',
                 backgroundSize: 'cover',
             }}
@@ -77,8 +116,6 @@ export default function Login() {
             >
                 <Typography variant="h4" gutterBottom color="primary">Login</Typography>
 
-                {error && <Typography color="error" sx={{ marginBottom: 2 }}>{error}</Typography>}
-
                 <form onSubmit={handleSubmit}>
                     <TextField
                         label="Email"
@@ -88,7 +125,7 @@ export default function Login() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        autoComplete="current-password"
+                        autoComplete="email"
                         error={!!emailError}
                         helperText={emailError}
                         sx={{ marginBottom: 2 }}
@@ -118,11 +155,15 @@ export default function Login() {
 
                     <Box sx={{ textAlign: 'center', marginTop: 2 }}>
                         <Typography variant="body2" color="textSecondary">
-                            Don't have an account? <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>Register</Link>
+                            Don't have an account?{' '}
+                            <Link to="/register" style={{ color: '#1976d2', textDecoration: 'none' }}>
+                                Register
+                            </Link>
                         </Typography>
                     </Box>
                 </form>
             </Container>
+            <ToastContainer />
         </Box>
     );
 }
