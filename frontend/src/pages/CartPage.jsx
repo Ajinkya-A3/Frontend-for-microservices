@@ -130,6 +130,7 @@ export default function CartPage() {
                   onQuantityChange={handleQuantityChange}
                   onRemove={handleRemove}
                   onBuyNow={handleBuyNow}
+                  onCartRefresh={fetchCart}
                 />
               </Grid>
             ))}

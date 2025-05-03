@@ -17,13 +17,43 @@ const toastOptions = {
     },
 };
 
-export default function CartHeader({ onBuyAll, onEmpty }) {
+export default function CartHeader({ onEmpty }) {
     const handleEmptyCart = async () => {
         try {
-            await onEmpty(); // Call the passed `onEmpty` prop
-            toast.success('Cart is now empty', toastOptions); // Display success toast
+            await onEmpty();
+            toast.success('Cart is now empty', toastOptions);
         } catch (error) {
-            toast.error('Failed to empty cart', toastOptions); // Display error toast if something fails
+            toast.error('Failed to empty cart', toastOptions);
+        }
+    };
+
+    const handleBuyAll = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            toast.error('User not authenticated', toastOptions);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_ORDER}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                toast.success('Order placed for all items!', toastOptions);
+                await onEmpty(); // Clear cart after placing order
+            } else {
+                toast.error(data.message || 'Failed to place order', toastOptions);
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+            toast.error('Something went wrong while placing the order', toastOptions);
         }
     };
 
@@ -38,13 +68,21 @@ export default function CartHeader({ onBuyAll, onEmpty }) {
                 gap: 2,
             }}
         >
-            <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#333', textAlign: { xs: 'center', sm: 'left' }, width: { xs: '100%', sm: 'auto' } }}>
+            <Typography
+                variant="h4"
+                sx={{
+                    fontWeight: 'bold',
+                    color: '#333',
+                    textAlign: { xs: 'center', sm: 'left' },
+                    width: { xs: '100%', sm: 'auto' },
+                }}
+            >
                 Your Cart
             </Typography>
 
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 <Button
-                    onClick={onBuyAll}
+                    onClick={handleBuyAll}
                     sx={{
                         textTransform: 'none',
                         fontWeight: 'bold',
@@ -65,7 +103,7 @@ export default function CartHeader({ onBuyAll, onEmpty }) {
 
                 <IconButton
                     color="error"
-                    onClick={handleEmptyCart} // Call the empty cart function
+                    onClick={handleEmptyCart}
                     sx={{
                         border: '1px solid #f44336',
                         px: 2,
