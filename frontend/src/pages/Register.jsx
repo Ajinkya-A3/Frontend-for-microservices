@@ -66,7 +66,7 @@ export default function Register() {
             const res = await userAPI.post('/register', { name, email, password });
 
             toast.success('Registration successful! Redirecting to login...', {
-                position: 'top-center',
+                position: 'top-right',
                 autoClose: 3000,
                 hideProgressBar: false,
                 closeOnClick: true,
@@ -87,7 +87,7 @@ export default function Register() {
             setTimeout(() => navigate('/'), 2500);
         } catch (err) {
             toast.error(err.response?.data?.message || 'Registration failed. Please try again.', {
-                position: 'top-center',
+                position: 'top-right',
                 autoClose: 3000,
                 hideProgressBar: false,
                 closeOnClick: true,

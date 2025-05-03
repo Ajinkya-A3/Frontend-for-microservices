@@ -1,22 +1,35 @@
 import { Card, CardMedia, CardContent, Typography, Button, Box } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
-import SnackbarComponent from './SnackbarComponent';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductDetailsCard = ({ product }) => {
-    const [cartSuccess, setCartSuccess] = useState(false);
-    const [error, setError] = useState('');
-
+    const [loading, setLoading] = useState(false);
     const placeholderImage = 'https://media.extra.com/s/aurora/100315775_800/Apple-iPhone-14-Pro-Max%2C-5G%2C-128GB%2C-Space-Black?locale=en-GB,en-*,*';
 
     const handleAddToCart = async () => {
         const token = localStorage.getItem('token');
         if (!token) {
-            setError('Please log in to add items to your cart.');
+            toast.error('Please log in to add items to your cart.', {
+                position: 'top-right',
+                autoClose: 3000,
+                style: {
+                    background: '#121212',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    borderRadius: '8px',
+                },
+                progressStyle: {
+                    background: '#f44336',
+                },
+            });
             return;
         }
 
         try {
+            setLoading(true);
             await axios.post(
                 `${import.meta.env.VITE_API_CART}/add`,
                 {
@@ -29,10 +42,39 @@ const ProductDetailsCard = ({ product }) => {
                     },
                 }
             );
-            setCartSuccess(true);
+
+            toast.success('Product added to cart!', {
+                position: 'top-right',
+                autoClose: 3000,
+                style: {
+                    background: '#121212',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    borderRadius: '8px',
+                },
+                progressStyle: {
+                    background: '#00e676',
+                },
+            });
         } catch (err) {
             console.error('Error adding to cart:', err);
-            setError('Failed to add product to cart.');
+            toast.error('Failed to add product to cart.', {
+                position: 'top-right',
+                autoClose: 3000,
+                style: {
+                    background: '#121212',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    borderRadius: '8px',
+                },
+                progressStyle: {
+                    background: '#f44336',
+                },
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -77,7 +119,7 @@ const ProductDetailsCard = ({ product }) => {
                     <Button
                         variant="contained"
                         fullWidth
-                        disabled={product.stock_quantity === 0}
+                        disabled={product.stock_quantity === 0 || loading}
                         onClick={handleAddToCart}
                         sx={{
                             mt: 3,
@@ -104,29 +146,12 @@ const ProductDetailsCard = ({ product }) => {
                             },
                         }}
                     >
-                        {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+                        {product.stock_quantity === 0 ? 'Out of Stock' : loading ? 'Adding...' : 'Add to Cart'}
                     </Button>
                 </CardContent>
             </Card>
 
-            {/* Snackbar Alerts */}
-            <SnackbarComponent
-                open={cartSuccess}
-                onClose={() => setCartSuccess(false)}
-                severity="success"
-                message="Product added to cart!"
-                autoHideDuration={1500}
-            />
-
-            {error && (
-                <SnackbarComponent
-                    open={Boolean(error)}
-                    onClose={() => setError('')}
-                    severity="error"
-                    message={error}
-                    autoHideDuration={2000}
-                />
-            )}
+            <ToastContainer />
         </>
     );
 };

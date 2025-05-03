@@ -54,7 +54,7 @@ export default function Login() {
             localStorage.setItem('token', res.data.token);
 
             toast.success('Login successful!', {
-                position: 'top-center',
+                position: 'top-right',
                 autoClose: 3000,
                 style: {
                     background: '#121212',
@@ -71,7 +71,7 @@ export default function Login() {
             setTimeout(() => navigate('/home'), 2500);
         } catch (err) {
             toast.error('Login failed! Please check your credentials.', {
-                position: 'top-center',
+                position: 'top-right',
                 autoClose: 3000,
                 style: {
                     background: '#121212',
