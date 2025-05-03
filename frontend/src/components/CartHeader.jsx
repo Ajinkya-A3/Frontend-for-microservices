@@ -1,7 +1,32 @@
 import { Box, Button, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { toast } from 'react-toastify';
+
+const toastOptions = {
+    position: 'top-right',
+    autoClose: 3000,
+    style: {
+        background: '#121212',
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: '15px',
+        borderRadius: '8px',
+    },
+    progressStyle: {
+        background: '#00e676',
+    },
+};
 
 export default function CartHeader({ onBuyAll, onEmpty }) {
+    const handleEmptyCart = async () => {
+        try {
+            await onEmpty(); // Call the passed `onEmpty` prop
+            toast.success('Cart is now empty', toastOptions); // Display success toast
+        } catch (error) {
+            toast.error('Failed to empty cart', toastOptions); // Display error toast if something fails
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -40,7 +65,7 @@ export default function CartHeader({ onBuyAll, onEmpty }) {
 
                 <IconButton
                     color="error"
-                    onClick={onEmpty}
+                    onClick={handleEmptyCart} // Call the empty cart function
                     sx={{
                         border: '1px solid #f44336',
                         px: 2,

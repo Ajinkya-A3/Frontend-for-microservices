@@ -5,6 +5,30 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CartHeader from '../components/CartHeader';
 import CartItemCard from '../components/CartItemCard';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const toastOptions = {
+  position: 'top-right',
+  autoClose: 3000,
+  style: {
+    background: '#121212',
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: '15px',
+    borderRadius: '8px',
+  },
+  progressStyle: {
+    background: '#00e676',
+  },
+};
+
+const toastErrorOptions = {
+  ...toastOptions,
+  progressStyle: {
+    background: '#f44336',
+  },
+};
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -46,17 +70,22 @@ export default function CartPage() {
 
   const handleRemove = async (productId) => {
     try {
+      setUpdating(true);
       await axios.delete(`${import.meta.env.VITE_API_CART}/remove/${productId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchCart();
+      await fetchCart();
+      toast.success('Item removed', toastOptions);
     } catch (err) {
       console.error('Error removing item:', err);
+      toast.error('Failed to remove item', toastErrorOptions);
+    } finally {
+      setUpdating(false);
     }
   };
 
   const handleBuyNow = (item) => {
-    alert(`Proceeding to buy "${item.name}"`);
+    toast.success(`Proceeding to buy "${item.name}"`, toastOptions);
   };
 
   const handleEmptyCart = async () => {
@@ -64,11 +93,14 @@ export default function CartPage() {
       await axios.delete(`${import.meta.env.VITE_API_CART}/clear`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchCart();
+      fetchCart(); // Refetch the cart
+      toast.success('Cart is now empty', toastOptions); // Success toast
     } catch (err) {
       console.error('Error emptying the cart:', err);
+      toast.error('Failed to empty cart', toastErrorOptions); // Error toast
     }
   };
+
 
   if (loading) {
     return (
@@ -81,8 +113,9 @@ export default function CartPage() {
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <Container sx={{ mt: 4, px: { xs: 1, sm: 2, md: 4 } }}>
-        <CartHeader onBuyAll={() => alert('Buying entire cart')} onEmpty={handleEmptyCart} />
+        <CartHeader onBuyAll={() => toast.success('Buying entire cart', toastOptions)} onEmpty={handleEmptyCart} />
         {cartItems.length === 0 ? (
           <Typography variant="h6" align="center" sx={{ mt: 6 }} color="text.secondary">
             No items in cart.
