@@ -54,7 +54,6 @@ const OrderCard = ({ order, onProductClick, onImageError }) => {
                                 onImageError={onImageError}
                             />
                         </Grid>
-
                     ))}
                 </Grid>
 
