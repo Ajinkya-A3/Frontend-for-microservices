@@ -19,7 +19,13 @@ const OrdersPage = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setOrders(res.data.orders);
+
+        // Sort by createdAt (newest first)
+        const sortedOrders = res.data.orders.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
+        setOrders(sortedOrders);
       } catch (error) {
         console.error("Failed to fetch orders", error);
       }
