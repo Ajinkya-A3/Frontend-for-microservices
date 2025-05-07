@@ -1,6 +1,7 @@
 import { Box, Button, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const toastOptions = {
     position: 'top-right',
@@ -18,6 +19,8 @@ const toastOptions = {
 };
 
 export default function CartHeader({ onEmpty }) {
+    const navigate = useNavigate();
+
     const handleEmptyCart = async () => {
         try {
             await onEmpty();
@@ -27,34 +30,15 @@ export default function CartHeader({ onEmpty }) {
         }
     };
 
-    const handleBuyAll = async () => {
+    const handleBuyAll = () => {
         const token = localStorage.getItem('token');
         if (!token) {
             toast.error('User not authenticated', toastOptions);
             return;
         }
 
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_ORDER}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                toast.success('Order placed for all items!', toastOptions);
-                await onEmpty(); // Clear cart after placing order
-            } else {
-                toast.error(data.message || 'Failed to place order', toastOptions);
-            }
-        } catch (error) {
-            console.error('Error placing order:', error);
-            toast.error('Something went wrong while placing the order', toastOptions);
-        }
+        // Navigate to the checkout page
+        navigate('/checkout');
     };
 
     return (
@@ -98,7 +82,7 @@ export default function CartHeader({ onEmpty }) {
                         },
                     }}
                 >
-                    Buy Entire Cart
+                    Proceed to Checkout
                 </Button>
 
                 <IconButton

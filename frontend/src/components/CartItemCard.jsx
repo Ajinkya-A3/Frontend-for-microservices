@@ -134,25 +134,7 @@ export default function CartItemCard({ item, updating, onQuantityChange, onRemov
                                 Remove
                             </Button>
                         </Stack>
-                        <Button
-                            variant="contained"
-                            onClick={handleBuyNow}
-                            sx={{
-                                textTransform: 'none',
-                                fontWeight: 'bold',
-                                px: 3,
-                                py: 1.2,
-                                borderRadius: 3,
-                                background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
-                                boxShadow: 3,
-                                '&:hover': {
-                                    transform: 'scale(1.05)',
-                                    backgroundColor: '#2196f3',
-                                },
-                            }}
-                        >
-                            Buy Now
-                        </Button>
+                        
                     </Box>
                 </Box>
             </Card>
