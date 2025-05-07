@@ -7,6 +7,7 @@ import {
     Typography,
   } from '@mui/material';
   import { useEffect, useState } from 'react';
+  import { useNavigate } from 'react-router-dom'; // Added for navigation
   import { toast } from 'react-toastify';
   import axios from 'axios';
   import CartItemCard from '../components/CartItemCard'; // Adjust path if needed
@@ -34,13 +35,11 @@ import {
       country: 'India',
     });
   
-    // State for cart items and loading status
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
-  
+    const navigate = useNavigate(); // Hook for navigation
     const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
   
-    // Fetch cart items
     const fetchCart = async () => {
       try {
         setLoading(true);
@@ -56,7 +55,6 @@ import {
       }
     };
   
-    // Fetch cart items on component mount
     useEffect(() => {
       fetchCart();
     }, []);
@@ -99,6 +97,36 @@ import {
       // API call to checkout service goes here
     };
   
+    const handleBuyNow = async () => {
+      if (!token) {
+        toast.error('User not authenticated');
+        return;
+      }
+  
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_ORDER}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ shippingAddress: form }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          toast.success('Order placed successfully!');
+          navigate('/orders'); // Redirect to the orders page after successful order
+        } else {
+          toast.error(data.message || 'Failed to place order');
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error('Something went wrong');
+      }
+    };
+  
     if (loading) {
       return <Typography>Loading...</Typography>;
     }
@@ -109,7 +137,6 @@ import {
           Checkout
         </Typography>
   
-        {/* 🛒 Cart Items and Address Form */}
         <Grid container spacing={4}>
           {/* Left side: Address */}
           <Grid item xs={12} md={7}>
@@ -215,7 +242,7 @@ import {
   
                 <Grid item xs={12}>
                   <Button
-                    type="submit"
+                    type="button" // Prevent form submission
                     fullWidth
                     variant="contained"
                     sx={{
@@ -232,6 +259,7 @@ import {
                         backgroundColor: '#2196f3',
                       },
                     }}
+                    onClick={handleBuyNow} // Integrated the handleBuyNow function here
                   >
                     Proceed to Buy
                   </Button>
@@ -248,12 +276,14 @@ import {
             <Grid container spacing={2}>
               {cartItems.map((item, index) => (
                 <Grid item xs={12} key={index}>
-                  {/* Wrapper to visually scale down the Card */}
                   <Box
                     sx={{
-                      transform: 'scale(0.75)',
+                      transform: 'scale(0.8)', // Adjust size of cards
                       transformOrigin: 'top left',
                       width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginBottom: '16px',
                     }}
                   >
                     <CartItemCard item={item} />
