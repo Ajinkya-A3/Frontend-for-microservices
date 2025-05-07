@@ -48,7 +48,7 @@ const OrderItemCard = ({ item, onClick, onImageError }) => {
                     Quantity: {item.quantity}
                 </Typography>
                 <Typography variant="body2" color="#212121">
-                    Price: ${item.price}
+                    Price:  ${item.price * item.quantity}
                 </Typography>
             </Box>
         </Card>

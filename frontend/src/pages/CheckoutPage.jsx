@@ -7,20 +7,18 @@ import {
     Typography,
   } from '@mui/material';
   import { useEffect, useState } from 'react';
-  import { useNavigate } from 'react-router-dom'; // Added for navigation
+  import { useNavigate } from 'react-router-dom';
   import { toast } from 'react-toastify';
   import axios from 'axios';
-  import CartItemCard from '../components/CartItemCard'; // Adjust path if needed
+  import CartItemCard from '../components/CartItemCard';
   
   const INDIAN_STATES = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
-    'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-    'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
-    'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
-    'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-    'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu',
-    'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'
+    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
+    'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+    'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim',
+    'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand',
+    'West Bengal', 'Delhi', 'Jammu and Kashmir', 'Ladakh'
   ];
   
   export default function CheckoutPage() {
@@ -37,8 +35,9 @@ import {
   
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate(); // Hook for navigation
-    const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
+    const [updating, setUpdating] = useState(false);
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
   
     const fetchCart = async () => {
       try {
@@ -90,13 +89,6 @@ import {
       }
     };
   
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      console.log('Shipping Address:', form);
-      toast.success('Order submitted! (mock)');
-      // API call to checkout service goes here
-    };
-  
     const handleBuyNow = async () => {
       if (!token) {
         toast.error('User not authenticated');
@@ -117,7 +109,7 @@ import {
   
         if (response.ok) {
           toast.success('Order placed successfully!');
-          navigate('/orders'); // Redirect to the orders page after successful order
+          navigate('/orders');
         } else {
           toast.error(data.message || 'Failed to place order');
         }
@@ -126,6 +118,58 @@ import {
         toast.error('Something went wrong');
       }
     };
+  
+    const handleQuantityChange = async (productId, newQty) => {
+      if (!token) return toast.error('User not authenticated');
+  
+      const safeQty = parseInt(newQty);
+      if (isNaN(safeQty) || safeQty < 1) {
+        toast.error('Invalid quantity');
+        return;
+      }
+  
+      setUpdating(true);
+      try {
+        await axios.put(
+          `${import.meta.env.VITE_API_CART}/update/${productId}`,
+          { quantity: safeQty },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success('Quantity updated');
+        fetchCart();
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to update quantity');
+      } finally {
+        setUpdating(false);
+      }
+    };
+  
+    const handleRemoveItem = async (productId) => {
+      if (!token) return toast.error('User not authenticated');
+      setUpdating(true);
+  
+      try {
+        await axios.delete(`${import.meta.env.VITE_API_CART}/remove/${productId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast.success('Item removed from cart');
+        fetchCart();
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to remove item');
+      } finally {
+        setUpdating(false);
+      }
+    };
+  
+    const calculateTotalAmount = () => {
+      return cartItems.reduce((total, item) => total + item.price , 0);
+    };
+  
+    const totalAmount = calculateTotalAmount();
   
     if (loading) {
       return <Typography>Loading...</Typography>;
@@ -138,113 +182,34 @@ import {
         </Typography>
   
         <Grid container spacing={4}>
-          {/* Left side: Address */}
+          {/* Shipping Address Form */}
           <Grid item xs={12} md={7}>
-            <form onSubmit={handleSubmit}>
+            <form>
               <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Full Name"
-                    name="fullName"
-                    value={form.fullName}
-                    onChange={handleChange}
-                    required
-                  />
-                </Grid>
-  
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Phone Number"
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    required
-                  />
-                </Grid>
-  
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Address Line 1"
-                    name="addressLine1"
-                    value={form.addressLine1}
-                    onChange={handleChange}
-                    required
-                    placeholder="House number, Apartment, etc."
-                  />
-                </Grid>
-  
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Address Line 2 (Optional)"
-                    name="addressLine2"
-                    value={form.addressLine2}
-                    onChange={handleChange}
-                    placeholder="Block, Sector, etc."
-                  />
-                </Grid>
-  
+                <Grid item xs={12}><TextField fullWidth label="Full Name" name="fullName" value={form.fullName} onChange={handleChange} required /></Grid>
+                <Grid item xs={12}><TextField fullWidth label="Phone Number" name="phone" value={form.phone} onChange={handleChange} required /></Grid>
+                <Grid item xs={12}><TextField fullWidth label="Address Line 1" name="addressLine1" value={form.addressLine1} onChange={handleChange} required /></Grid>
+                <Grid item xs={12}><TextField fullWidth label="Address Line 2 (Optional)" name="addressLine2" value={form.addressLine2} onChange={handleChange} /></Grid>
+                <Grid item xs={12} sm={6}><TextField fullWidth label="City" name="city" value={form.city} onChange={handleChange} required /></Grid>
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="City"
-                    name="city"
-                    value={form.city}
-                    onChange={handleChange}
-                    required
-                  />
-                </Grid>
-  
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="State"
-                    name="state"
-                    value={form.state}
-                    onChange={handleChange}
-                    select
-                    required
-                    sx={{ minWidth: 200 }}
-                  >
+                  <TextField fullWidth label="State" name="state" value={form.state} onChange={handleChange} select required>
                     {INDIAN_STATES.map((state) => (
-                      <MenuItem key={state} value={state}>
-                        {state}
-                      </MenuItem>
+                      <MenuItem key={state} value={state}>{state}</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
-  
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Pincode"
-                    name="postalCode"
-                    value={form.postalCode}
-                    onChange={handleChange}
-                    onBlur={handlePincodeBlur}
-                    required
-                  />
+                  <TextField fullWidth label="Pincode" name="postalCode" value={form.postalCode} onChange={handleChange} onBlur={handlePincodeBlur} required />
                 </Grid>
-  
                 <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Country"
-                    name="country"
-                    value={form.country}
-                    onChange={handleChange}
-                    disabled
-                  />
+                  <TextField fullWidth label="Country" name="country" value={form.country} disabled />
                 </Grid>
-  
                 <Grid item xs={12}>
                   <Button
-                    type="button" // Prevent form submission
+                    type="button"
                     fullWidth
                     variant="contained"
+                    onClick={handleBuyNow}
                     sx={{
                       textTransform: 'none',
                       fontWeight: 'bold',
@@ -259,34 +224,28 @@ import {
                         backgroundColor: '#2196f3',
                       },
                     }}
-                    onClick={handleBuyNow} // Integrated the handleBuyNow function here
                   >
-                    Proceed to Buy
+                    Proceed to Pay ${totalAmount.toFixed(2)}
                   </Button>
                 </Grid>
               </Grid>
             </form>
           </Grid>
   
-          {/* Right side: Cart Items */}
+          {/* Cart Summary */}
           <Grid item xs={12} md={5}>
-            <Typography variant="h6" gutterBottom>
-              Your Cart
-            </Typography>
+            <Typography variant="h6" gutterBottom>Your Cart</Typography>
             <Grid container spacing={2}>
-              {cartItems.map((item, index) => (
-                <Grid item xs={12} key={index}>
-                  <Box
-                    sx={{
-                      transform: 'scale(0.8)', // Adjust size of cards
-                      transformOrigin: 'top left',
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      marginBottom: '16px',
-                    }}
-                  >
-                    <CartItemCard item={item} />
+              {cartItems.map((item) => (
+                <Grid item xs={12} key={item._id}>
+                  <Box sx={{ transform: 'scale(0.8)', transformOrigin: 'top left' }}>
+                    <CartItemCard
+                      item={item}
+                      updating={updating}
+                      onQuantityChange={handleQuantityChange}
+                      onRemove={handleRemoveItem}
+                      onCartRefresh={fetchCart}
+                    />
                   </Box>
                 </Grid>
               ))}
