@@ -100,12 +100,33 @@ const CheckoutForm = ({ cartItems }) => {
     };
 
     return (
-        <Box sx={{ p: 4, borderRadius: 2, backgroundColor: '#ffffff', boxShadow: 3 }}>
-            <Typography variant="h5" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold', mb: 2 }}>
-                Shipping Information
+        <Box
+            sx={{
+                p: { xs: 2, sm: 4 },
+                borderRadius: 3,
+                backgroundColor: '#ffffff',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                maxWidth: 800,
+                mx: 'auto',
+                mt: 4,
+            }}
+        >
+            <Typography
+                variant="h5"
+                gutterBottom
+                sx={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    mb: 3,
+                    color: '#1976d2',
+                    borderBottom: '2px solid #1976d2',
+                    pb: 1,
+                }}
+            >
+                🚚 Shipping Information
             </Typography>
-            <Grid container spacing={3}>
-                {[
+            <Grid container spacing={{ xs: 2, sm: 3 }}>
+                {[ 
                     { label: 'Full Name', name: 'fullName', xs: 12, sm: 6 },
                     { label: 'Phone Number', name: 'phone', xs: 12, sm: 6 },
                     { label: 'Address Line 1', name: 'addressLine1', xs: 12, sm: 12 },
@@ -121,18 +142,24 @@ const CheckoutForm = ({ cartItems }) => {
                             value={form[name]}
                             onChange={handleChange}
                             onBlur={name === 'postalCode' ? handlePincodeBlur : undefined}
-                            InputProps={{ disableUnderline: true }}
+                            InputProps={{
+                                disableUnderline: true,
+                            }}
                             sx={{
-                                backgroundColor: '#f7f7f7',
-                                borderRadius: 1,
-                                '& .MuiFilledInput-root': { borderRadius: 1 },
-                                mb: 2, // spacing between fields
+                                backgroundColor: '#f1f5f9',
+                                borderRadius: 2,
+                                '& .MuiFilledInput-root': {
+                                    borderRadius: 2,
+                                    fontSize: '0.95rem',
+                                },
+                                '& .MuiInputLabel-root': {
+                                    fontWeight: '500',
+                                },
                             }}
                         />
                     </Grid>
                 ))}
 
-                {/* State Field with Flexbox Layout */}
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
@@ -142,16 +169,18 @@ const CheckoutForm = ({ cartItems }) => {
                         name="state"
                         value={form.state}
                         onChange={handleChange}
-                        InputProps={{ disableUnderline: true }}
+                        InputProps={{
+                            disableUnderline: true,
+                        }}
                         sx={{
-                            backgroundColor: '#f7f7f7',
-                            borderRadius: 1,
+                            backgroundColor: '#f1f5f9',
+                            borderRadius: 2,
                             mb: 2,
                             '& .MuiFilledInput-root': {
-                                paddingRight: 22, // Adjust padding to avoid clipping the dropdown text
+                                paddingRight: 22,
                             },
                             '& .MuiSelect-select': {
-                                paddingRight: 12,  // Ensures the dropdown indicator is visible
+                                paddingRight: 12,
                             },
                         }}
                     >
@@ -163,9 +192,6 @@ const CheckoutForm = ({ cartItems }) => {
                     </TextField>
                 </Grid>
 
-
-
-                {/* Pincode Field */}
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
@@ -175,16 +201,17 @@ const CheckoutForm = ({ cartItems }) => {
                         value={form.postalCode}
                         onChange={handleChange}
                         onBlur={handlePincodeBlur}
-                        InputProps={{ disableUnderline: true }}
+                        InputProps={{
+                            disableUnderline: true,
+                        }}
                         sx={{
-                            backgroundColor: '#f7f7f7',
-                            borderRadius: 1,
+                            backgroundColor: '#f1f5f9',
+                            borderRadius: 2,
                             mb: 2,
                         }}
                     />
                 </Grid>
 
-                {/* Country Field */}
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
@@ -193,16 +220,17 @@ const CheckoutForm = ({ cartItems }) => {
                         name="country"
                         value={form.country}
                         disabled
-                        InputProps={{ disableUnderline: true }}
+                        InputProps={{
+                            disableUnderline: true,
+                        }}
                         sx={{
-                            backgroundColor: '#f7f7f7',
-                            borderRadius: 1,
+                            backgroundColor: '#f1f5f9',
+                            borderRadius: 2,
                             mb: 2,
                         }}
                     />
                 </Grid>
 
-                {/* Proceed to Pay Button */}
                 <Grid item xs={12}>
                     <Button
                         fullWidth
@@ -212,13 +240,15 @@ const CheckoutForm = ({ cartItems }) => {
                             py: 1.5,
                             fontSize: '1.1rem',
                             fontWeight: 'bold',
-                            borderRadius: 2,
-                            background: 'linear-gradient(to right, #2196f3, #00bcd4)',
+                            borderRadius: 3,
+                            background: 'linear-gradient(135deg, #2196f3, #00bcd4)',
                             color: '#fff',
-                            transition: '0.4s ease',
+                            boxShadow: '0px 4px 12px rgba(0,0,0,0.2)',
+                            transition: 'all 0.3s ease-in-out',
                             '&:hover': {
-                                background: 'linear-gradient(to right, #00bcd4, #2196f3)',
-                                transform: 'scale(1.05)',
+                                background: 'linear-gradient(135deg, #00bcd4, #2196f3)',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0px 6px 16px rgba(0,0,0,0.3)',
                             },
                         }}
                     >

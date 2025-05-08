@@ -79,12 +79,28 @@ const CheckoutPage = () => {
     <>
       <Navbar />
       <Container maxWidth="lg" sx={{ my: 5 }}>
-        <Typography variant="h4" gutterBottom>Checkout</Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <CheckoutForm cartItems={cartItems} />
+        <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+          Checkout
+        </Typography>
+        <Grid container spacing={4} justifyContent="center" alignItems="center">
+          {/* Center the CheckoutForm above the CartSummary */}
+          <Grid item xs={12} sm={12} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                minHeight: '300px',
+                padding: 2,
+                borderRadius: 2,
+                backgroundColor: 'white',
+              }}
+            >
+              <CheckoutForm cartItems={cartItems} />
+            </Box>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <CartSummary
               cartItems={cartItems}
               updating={updating}
