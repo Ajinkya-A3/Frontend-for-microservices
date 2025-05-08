@@ -88,89 +88,94 @@ export default function Home() {
     };
 
     return (
-        <Container sx={{ mt: 4 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
 
-            <Typography variant="h4" gutterBottom sx={{ mt: 2, textAlign: 'center', fontWeight: 'bold' }}>
-                Product List
-            </Typography>
+            <Box component="main" sx={{ flexGrow: 1 }}>
+                <Container sx={{ mt: 4 }}>
+                    <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+                        Product List
+                    </Typography>
 
-            <SearchSortComponent
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                sortOrder={sortOrder}
-                setSortOrder={setSortOrder}
-            />
+                    <SearchSortComponent
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        sortOrder={sortOrder}
+                        setSortOrder={setSortOrder}
+                    />
 
-            {error && (
-                <Typography color="error" textAlign="center">
-                    {error}
-                </Typography>
-            )}
-
-            {loading ? (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 3,
-                        justifyContent: 'center',
-                        mt: 4,
-                    }}
-                >
-                    {[...Array(8)].map((_, index) => (
-                        <Skeleton
-                            variant="rectangular"
-                            width={250}
-                            height={350}
-                            key={index}
-                            sx={{ borderRadius: 2 }}
-                        />
-                    ))}
-                </Box>
-            ) : (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 3,
-                        justifyContent: 'center',
-                        mt: 4,
-                    }}
-                >
-                    {products.length > 0 ? (
-                        products.map((product) => (
-                            <ProductCard
-                                key={product._id}
-                                product={product}
-                                handleAddToCart={handleAddToCart}
-                            />
-                        ))
-                    ) : (
-                        <Typography variant="h6" sx={{ mt: 4 }}>
-                            No products found.
+                    {error && (
+                        <Typography color="error" textAlign="center">
+                            {error}
                         </Typography>
                     )}
-                </Box>
-            )}
 
-            <PaginationComponent count={totalPages} page={page} onPageChange={handlePageChange} />
+                    {loading ? (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 3,
+                                justifyContent: 'center',
+                                mt: 4,
+                            }}
+                        >
+                            {[...Array(8)].map((_, index) => (
+                                <Skeleton
+                                    variant="rectangular"
+                                    width={250}
+                                    height={350}
+                                    key={index}
+                                    sx={{ borderRadius: 2 }}
+                                />
+                            ))}
+                        </Box>
+                    ) : (
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 3,
+                                justifyContent: 'center',
+                                mt: 4,
+                            }}
+                        >
+                            {products.length > 0 ? (
+                                products.map((product) => (
+                                    <ProductCard
+                                        key={product._id}
+                                        product={product}
+                                        handleAddToCart={handleAddToCart}
+                                    />
+                                ))
+                            ) : (
+                                <Typography variant="h6" sx={{ mt: 4 }}>
+                                    No products found.
+                                </Typography>
+                            )}
+                        </Box>
+                    )}
 
-            <SnackbarComponent
-                open={logoutSuccess}
-                onClose={() => setLogoutSuccess(false)}
-                severity="success"
-                message="Logged out successfully!"
-            />
+                    <PaginationComponent count={totalPages} page={page} onPageChange={handlePageChange} />
 
-            <SnackbarComponent
-                open={cartSuccess}
-                onClose={() => setCartSuccess(false)}
-                severity="success"
-                message="Product added to cart!"
-                autoHideDuration={1000}
-            />
+                    <SnackbarComponent
+                        open={logoutSuccess}
+                        onClose={() => setLogoutSuccess(false)}
+                        severity="success"
+                        message="Logged out successfully!"
+                    />
+
+                    <SnackbarComponent
+                        open={cartSuccess}
+                        onClose={() => setCartSuccess(false)}
+                        severity="success"
+                        message="Product added to cart!"
+                        autoHideDuration={1000}
+                    />
+                </Container>
+            </Box>
+
             <Footer />
-        </Container>
+        </Box>
     );
 }
