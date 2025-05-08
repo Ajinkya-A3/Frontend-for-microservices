@@ -3,7 +3,7 @@ import {
   ListItemIcon, Divider, Tooltip
 } from '@mui/material';
 import {
-  AccountCircle, Info, ShoppingCart, Assignment, Logout
+  AccountCircle, Info, ShoppingCart, Assignment, Logout, AttachMoney
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -84,8 +84,8 @@ export default function Navbar() {
               Cart
             </MenuItem>
             <MenuItem onClick={() => handleClose('/checkout')}>
-              <ListItemIcon><ShoppingCart fontSize="small" /></ListItemIcon>
-              CheckOut
+              <ListItemIcon><AttachMoney fontSize="small" /></ListItemIcon>
+              Checkout
             </MenuItem>
             <MenuItem onClick={() => handleClose('/orders')}>
               <ListItemIcon><Assignment fontSize="small" /></ListItemIcon>
