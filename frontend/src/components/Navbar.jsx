@@ -83,6 +83,10 @@ export default function Navbar() {
               <ListItemIcon><ShoppingCart fontSize="small" /></ListItemIcon>
               Cart
             </MenuItem>
+            <MenuItem onClick={() => handleClose('/checkout')}>
+              <ListItemIcon><ShoppingCart fontSize="small" /></ListItemIcon>
+              CheckOut
+            </MenuItem>
             <MenuItem onClick={() => handleClose('/orders')}>
               <ListItemIcon><Assignment fontSize="small" /></ListItemIcon>
               Orders

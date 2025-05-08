@@ -75,10 +75,13 @@ export default function CartHeader({ onEmpty }) {
                         py: 1.2,
                         borderRadius: 3,
                         background: 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+                        backgroundSize: '200%',
+                        transition: 'all 0.4s ease',
                         boxShadow: 3,
                         '&:hover': {
                             transform: 'scale(1.05)',
-                            backgroundColor: '#2196f3',
+                            backgroundPosition: 'right',
+                            background: 'linear-gradient(90deg, #00bcd4 0%, #2196f3 50%, #3f51b5 100%)',
                         },
                     }}
                 >

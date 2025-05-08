@@ -80,7 +80,6 @@ export default function CartItemCard({ item, updating, onQuantityChange, onRemov
                         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>{item.description}</Typography>
                         <Typography variant="h6" color="primary">Price: ${item.price.toFixed(2)}</Typography>
                     </CardContent>
-
                     <Box
                         sx={{
                             mt: 2,
@@ -88,7 +87,7 @@ export default function CartItemCard({ item, updating, onQuantityChange, onRemov
                             pb: 2,
                             display: 'flex',
                             flexDirection: { xs: 'column', sm: 'row' },
-                            justifyContent: 'space-between',
+                            justifyContent: 'flex-end',
                             alignItems: 'center',
                             gap: 2,
                         }}
@@ -134,7 +133,6 @@ export default function CartItemCard({ item, updating, onQuantityChange, onRemov
                                 Remove
                             </Button>
                         </Stack>
-                        
                     </Box>
                 </Box>
             </Card>

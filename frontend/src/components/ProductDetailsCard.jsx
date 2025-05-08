@@ -116,38 +116,38 @@ const ProductDetailsCard = ({ product }) => {
                         Category: {product.category}
                     </Typography>
 
-                    <Button
-                        variant="contained"
-                        fullWidth
-                        disabled={product.stock_quantity === 0 || loading}
-                        onClick={handleAddToCart}
-                        sx={{
-                            mt: 3,
-                            borderRadius: 2,
-                            py: 1.5,
-                            textTransform: 'none',
-                            fontWeight: 'bold',
-                            fontSize: '1rem',
-                            color: 'white',
-                            background: product.stock_quantity === 0
-                                ? 'gray'
-                                : 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
-                            backgroundSize: '200%',
-                            transition: 'all 0.4s ease',
-                            '&:hover': {
-                                transform: 'scale(1.05)',
-                                backgroundPosition: 'right',
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            disabled={product.stock_quantity === 0 || loading}
+                            onClick={handleAddToCart}
+                            sx={{
+                                mt: 3,
+                                borderRadius: 2,
+                                py: 1.5,
+                                textTransform: 'none',
+                                fontWeight: 'bold',
+                                fontSize: '1rem',
+                                color: 'white',
                                 background: product.stock_quantity === 0
                                     ? 'gray'
-                                    : 'linear-gradient(90deg, #00bcd4 0%, #2196f3 50%, #3f51b5 100%)',
-                            },
-                            '&:disabled': {
-                                cursor: 'not-allowed',
-                            },
-                        }}
-                    >
-                        {product.stock_quantity === 0 ? 'Out of Stock' : loading ? 'Adding...' : 'Add to Cart'}
-                    </Button>
+                                    : 'linear-gradient(90deg, #3f51b5 0%, #2196f3 50%, #00bcd4 100%)',
+                                backgroundSize: '200%',
+                                transition: 'all 0.4s ease',
+                                '&:hover': {
+                                    transform: 'scale(1.05)',
+                                    backgroundPosition: 'right',
+                                    background: product.stock_quantity === 0
+                                        ? 'gray'
+                                        : 'linear-gradient(90deg, #00bcd4 0%, #2196f3 50%, #3f51b5 100%)',
+                                },
+                                '&:disabled': {
+                                    cursor: 'not-allowed',
+                                },
+                            }}
+                        >
+                            {product.stock_quantity === 0 ? 'Out of Stock' : loading ? 'Adding...' : 'Add to Cart'}
+                        </Button>
                 </CardContent>
             </Card>
 
