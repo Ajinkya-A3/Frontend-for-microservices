@@ -71,12 +71,11 @@ const CheckoutForm = ({ cartItems }) => {
     };
 
     const calculateTotalAmount = () =>
-        cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+        cartItems.reduce((total, item) => total + item.price , 0);
 
     const handleBuyNow = async () => {
         if (!token) return toast.error('User not authenticated');
         if (!validateForm()) return;
-
         try {
             const response = await fetch(`${import.meta.env.VITE_API_ORDER}`, {
                 method: 'POST',
@@ -84,7 +83,7 @@ const CheckoutForm = ({ cartItems }) => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ shippingAddress: form }),
+                body: JSON.stringify({ shippingAddress: form ,items: cartItems, }),
             });
 
             const data = await response.json();

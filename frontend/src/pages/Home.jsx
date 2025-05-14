@@ -38,7 +38,7 @@ export default function Home() {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await productAPI.get(`/?name=${searchQuery}&sortBy=price&order=${sortOrder}&page=${page}`);
+            const response = await productAPI.get(`?name=${searchQuery}&sortBy=price&order=${sortOrder}&page=${page}`);
             setProducts(response.data.products || []);
             setTotalPages(response.data.totalPages || 1);
         } catch (err) {
